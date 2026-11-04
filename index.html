@@ -92,6 +92,23 @@
     outline: none; border-color: var(--acento); box-shadow: 0 0 0 4px var(--anillo);
   }
 
+  /* Rubros (botones grandes de categorías) */
+  .rubros {
+    margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .rubro {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid var(--borde); background: var(--superficie); color: var(--texto);
+    border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; transition: background .15s, border-color .15s;
+  }
+  .rubro:hover { border-color: var(--acento); }
+  @media (max-width: 600px) {
+    .rubros { flex-wrap: nowrap; overflow-x: auto; margin-left: -16px; margin-right: -16px; padding: 0 16px 4px; }
+  }
+  .rubro[aria-pressed="true"] { background: var(--acento); border-color: var(--acento); color: #fff; }
+  .rubro .cuenta { font-weight: 500; opacity: 0.7; font-size: 0.8rem; }
+
   .resumen {
     max-width: 880px; margin: 18px auto 4px; padding: 0 16px;
     font-size: 0.88rem; color: var(--texto-suave);
@@ -114,7 +131,7 @@
     border-radius: 999px; padding: 4px 12px;
   }
   .card h3 { margin: 2px 0 0; font-size: 1.08rem; font-weight: 700; letter-spacing: -0.01em; }
-  .card .descripcion { margin: 0; color: var(--texto-suave); font-size: 0.92rem; }
+  .card .descripcion { margin: 0; color: var(--texto-suave); font-size: 0.92rem; overflow-wrap: anywhere; }
   .card .fila-contacto {
     margin-top: auto; padding-top: 10px; border-top: 1px dashed var(--borde);
     display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.88rem; color: var(--texto-suave);
@@ -125,6 +142,7 @@
     font-size: 0.85rem; font-weight: 600; color: var(--acento); text-decoration: none;
   }
   .card .redes-link:hover { text-decoration: underline; }
+  .card .rubro-card { font-size: 0.78rem; color: var(--texto-suave); margin: 0; }
 
   /* Categorías de color (8 variantes, con versión dark) */
   .cat-0 { --cat-bg:#eef2ff; --cat-fg:#4338ca; }
@@ -199,6 +217,7 @@
 </div>
 
 <div class="envoltura">
+  <div class="rubros" id="rubros" role="toolbar" aria-label="Rubros"></div>
   <p class="resumen" id="resumen"></p>
 
   <div id="estado">
@@ -218,6 +237,7 @@
   </footer>
 </div>
 
+<script src="categorias.js"></script>
 <script>
 /* ============================================================
    CONFIGURACIÓN — completar con tus datos reales
@@ -271,15 +291,54 @@ function escaparHtml(texto) {
 }
 
 let entradasTodas = [];
+let rubroElegido = "";
+
+/* Busca a qué rubro pertenece una categoría (según categorias.js) */
+const mapaRubros = new Map();
+RUBROS.forEach(r => r.categorias.forEach(c => mapaRubros.set(normalizar(c), r)));
+function rubroDe(categoria) {
+  return mapaRubros.get(normalizar(categoria)) || RUBRO_OTROS;
+}
+
+/* "carnicerias" encuentra "Carnicería": quitamos el plural de cada palabra */
+function singular(palabra) {
+  if (palabra.length > 4 && palabra.endsWith("es") && !/[aeiou]es$/.test(palabra)) return palabra.slice(0, -2);
+  if (palabra.length > 3 && palabra.endsWith("s")) return palabra.slice(0, -1);
+  return palabra;
+}
+function coincide(texto, consulta) {
+  const t = normalizar(texto);
+  return consulta.split(/\s+/).filter(Boolean).every(p => t.includes(singular(p)));
+}
+
+function linkInstagram(valor) {
+  const v = (valor || "").toString().trim();
+  if (!v) return "";
+  if (/^https?:\/\//i.test(v)) return v;
+  if (/^(www\.)?instagram\.com\//i.test(v)) return "https://" + v;
+  return "https://www.instagram.com/" + v.replace(/^@/, "").replace(/\/+$/, "") + "/";
+}
+
+function linkWhatsapp(telefono) {
+  let n = (telefono || "").toString().replace(/[^0-9]/g, "");
+  if (!n) return "";
+  if (!n.startsWith("54")) n = "549" + n.replace(/^0/, "");
+  return "https://wa.me/" + n;
+}
+
+function linkMaps(nombre) {
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(nombre + " General Pinto Buenos Aires");
+}
 
 function renderizar() {
   const q = normalizar(document.getElementById("buscador").value);
   const cat = document.getElementById("filtroCategoria").value;
 
   const filtradas = entradasTodas.filter(e => {
-    const matchQ = !q || normalizar(e.nombre + " " + e.categoria + " " + e.descripcion + " " + e.zona).includes(q);
+    const matchQ = !q || coincide(e.nombre + " " + e.categoria + " " + e.rubro.nombre + " " + e.descripcion + " " + e.zona, q);
+    const matchRubro = !rubroElegido || e.rubro.nombre === rubroElegido;
     const matchCat = !cat || e.categoria === cat;
-    return matchQ && matchCat;
+    return matchQ && matchRubro && matchCat;
   });
 
   const lista = document.getElementById("lista");
@@ -305,21 +364,44 @@ function renderizar() {
   resumen.textContent = `${filtradas.length} de ${entradasTodas.length} servicio${entradasTodas.length === 1 ? "" : "s"}`;
   lista.innerHTML = filtradas.map(e => `
     <div class="card">
-      <span class="categoria ${claseCategoria(e.categoria)}">${escaparHtml(e.categoria) || "General"}</span>
+      <span class="categoria ${claseCategoria(e.rubro.nombre)}">${e.rubro.emoji} ${escaparHtml(e.categoria) || "General"}</span>
       <h3>${escaparHtml(e.nombre) || "(sin nombre)"}</h3>
       ${e.descripcion ? `<p class="descripcion">${escaparHtml(e.descripcion)}</p>` : ""}
       <div class="fila-contacto">
-        ${e.telefono ? `<a href="tel:${escaparHtml(e.telefono).replace(/[^0-9+]/g, "")}">📞 ${escaparHtml(e.telefono)}</a>` : ""}
+        ${e.telefono ? `<a href="${linkWhatsapp(e.telefono)}" target="_blank" rel="noopener">💬 ${escaparHtml(e.telefono)}</a>` : ""}
         ${e.zona ? `<span>📍 ${escaparHtml(e.zona)}</span>` : ""}
-        ${e.redes ? `<a class="redes-link" href="${escaparHtml(e.redes)}" target="_blank" rel="noopener">Ver redes ↗</a>` : ""}
+        ${e.redes ? `<a class="redes-link" href="${escaparHtml(linkInstagram(e.redes))}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}
+        <a class="redes-link" href="${linkMaps(e.nombre)}" target="_blank" rel="noopener">Ver en Maps ↗</a>
       </div>
     </div>
   `).join("");
 }
 
+function poblarRubros() {
+  const cont = document.getElementById("rubros");
+  const cuentas = new Map();
+  entradasTodas.forEach(e => cuentas.set(e.rubro.nombre, (cuentas.get(e.rubro.nombre) || 0) + 1));
+  const lista = [...RUBROS, RUBRO_OTROS].filter(r => cuentas.has(r.nombre));
+  const botones = [{ nombre: "", emoji: "✨", etiqueta: "Todos", cuenta: entradasTodas.length }]
+    .concat(lista.map(r => ({ nombre: r.nombre, emoji: r.emoji, etiqueta: r.nombre, cuenta: cuentas.get(r.nombre) })));
+  cont.innerHTML = botones.map(b => `
+    <button type="button" class="rubro" data-rubro="${escaparHtml(b.nombre)}" aria-pressed="${b.nombre === rubroElegido}">
+      <span>${b.emoji}</span> ${escaparHtml(b.etiqueta)} <span class="cuenta">${b.cuenta}</span>
+    </button>`).join("");
+  cont.querySelectorAll(".rubro").forEach(btn => btn.addEventListener("click", () => {
+    rubroElegido = btn.dataset.rubro;
+    cont.querySelectorAll(".rubro").forEach(b => b.setAttribute("aria-pressed", b === btn));
+    poblarCategorias();
+    renderizar();
+  }));
+}
+
 function poblarCategorias() {
   const select = document.getElementById("filtroCategoria");
-  const categorias = [...new Set(entradasTodas.map(e => e.categoria).filter(Boolean))].sort();
+  select.innerHTML = '<option value="">Todas las categorías</option>';
+  const categorias = [...new Set(entradasTodas
+    .filter(e => !rubroElegido || e.rubro.nombre === rubroElegido)
+    .map(e => e.categoria).filter(Boolean))].sort((a, b) => a.localeCompare(b, "es"));
   categorias.forEach(c => {
     const opt = document.createElement("option");
     opt.value = c;
@@ -333,7 +415,8 @@ function cargarDatosSheet(respuesta) {
     const tabla = respuesta.table;
     const headers = tabla.cols.map(c => c.label || "");
 
-    const idxNombre = buscarColumna(headers, "nombre", "negocio");
+    let idxNombre = buscarColumna(headers, "negocio", "emprendimiento"); // primero el nombre del negocio
+    if (idxNombre < 0) idxNombre = buscarColumna(headers, "nombre");
     const idxCategoria = buscarColumna(headers, "categoria", "oficio", "rubro");
     const idxTelefono = buscarColumna(headers, "telefono", "whatsapp", "celular");
     const idxDescripcion = buscarColumna(headers, "descrip");
@@ -353,8 +436,10 @@ function cargarDatosSheet(respuesta) {
         redes: val(row, idxRedes),
         publicado: val(row, idxPublicado),
       }))
-      .filter(e => idxPublicado < 0 ? true : esPublicado(e.publicado)); // si no hay columna "Publicado", muestra todo
+      .filter(e => idxPublicado < 0 ? true : esPublicado(e.publicado)) // si no hay columna "Publicado", muestra todo
+      .map(e => ({ ...e, categoria: e.categoria.toString().trim(), rubro: rubroDe(e.categoria) }));
 
+    poblarRubros();
     poblarCategorias();
     renderizar();
   } catch (err) {
