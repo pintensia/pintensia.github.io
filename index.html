@@ -335,9 +335,9 @@ function renderizar() {
   const cat = document.getElementById("filtroCategoria").value;
 
   const filtradas = entradasTodas.filter(e => {
-    const matchQ = !q || coincide(e.nombre + " " + e.categoria + " " + e.rubro.nombre + " " + e.descripcion + " " + e.zona, q);
-    const matchRubro = !rubroElegido || e.rubro.nombre === rubroElegido;
-    const matchCat = !cat || e.categoria === cat;
+    const matchQ = !q || coincide(e.nombre + " " + e.categorias.join(" ") + " " + e.rubros.map(r => r.nombre).join(" ") + " " + e.descripcion + " " + e.zona, q);
+    const matchRubro = !rubroElegido || e.rubros.some(r => r.nombre === rubroElegido);
+    const matchCat = !cat || e.categorias.includes(cat);
     return matchQ && matchRubro && matchCat;
   });
 
@@ -364,7 +364,7 @@ function renderizar() {
   resumen.textContent = `${filtradas.length} de ${entradasTodas.length} servicio${entradasTodas.length === 1 ? "" : "s"}`;
   lista.innerHTML = filtradas.map(e => `
     <div class="card">
-      <span class="categoria ${claseCategoria(e.rubro.nombre)}">${e.rubro.emoji} ${escaparHtml(e.categoria) || "General"}</span>
+      ${e.categorias.map((c, i) => `<span class="categoria ${claseCategoria(rubroDe(c).nombre)}">${rubroDe(c).emoji} ${escaparHtml(c)}</span>`).join("") || `<span class="categoria">General</span>`}
       <h3>${escaparHtml(e.nombre) || "(sin nombre)"}</h3>
       ${e.descripcion ? `<p class="descripcion">${escaparHtml(e.descripcion)}</p>` : ""}
       <div class="fila-contacto">
@@ -380,7 +380,7 @@ function renderizar() {
 function poblarRubros() {
   const cont = document.getElementById("rubros");
   const cuentas = new Map();
-  entradasTodas.forEach(e => cuentas.set(e.rubro.nombre, (cuentas.get(e.rubro.nombre) || 0) + 1));
+  entradasTodas.forEach(e => e.rubros.forEach(r => cuentas.set(r.nombre, (cuentas.get(r.nombre) || 0) + 1)));
   const lista = [...RUBROS, RUBRO_OTROS].filter(r => cuentas.has(r.nombre));
   const botones = [{ nombre: "", emoji: "✨", etiqueta: "Todos", cuenta: entradasTodas.length }]
     .concat(lista.map(r => ({ nombre: r.nombre, emoji: r.emoji, etiqueta: r.nombre, cuenta: cuentas.get(r.nombre) })));
@@ -400,8 +400,7 @@ function poblarCategorias() {
   const select = document.getElementById("filtroCategoria");
   select.innerHTML = '<option value="">Todas las categorías</option>';
   const categorias = [...new Set(entradasTodas
-    .filter(e => !rubroElegido || e.rubro.nombre === rubroElegido)
-    .map(e => e.categoria).filter(Boolean))].sort((a, b) => a.localeCompare(b, "es"));
+    .flatMap(e => e.categorias.filter(c => !rubroElegido || rubroDe(c).nombre === rubroElegido)))].sort((a, b) => a.localeCompare(b, "es"));
   categorias.forEach(c => {
     const opt = document.createElement("option");
     opt.value = c;
@@ -437,7 +436,12 @@ function cargarDatosSheet(respuesta) {
         publicado: val(row, idxPublicado),
       }))
       .filter(e => idxPublicado < 0 ? true : esPublicado(e.publicado)) // si no hay columna "Publicado", muestra todo
-      .map(e => ({ ...e, categoria: e.categoria.toString().trim(), rubro: rubroDe(e.categoria) }));
+      .map(e => {
+        // Un negocio puede tener varias categorías separadas por ";"
+        const categorias = e.categoria.toString().split(";").map(c => c.trim()).filter(Boolean);
+        const rubros = [...new Set(categorias.map(rubroDe))];
+        return { ...e, categorias, rubros: rubros.length ? rubros : [RUBRO_OTROS] };
+      });
 
     poblarRubros();
     poblarCategorias();

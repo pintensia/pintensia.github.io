@@ -13,6 +13,8 @@
      No importan mayúsculas ni tildes.
    - Si una categoría de la planilla no está en ninguna lista,
      el negocio aparece igual, dentro del rubro "Otros".
+   - Un negocio puede tener más de una categoría: en la planilla
+     separalas con punto y coma. Ej: "Accesorios de moda; Regalería".
    ================================================================ */
 
 const RUBROS = [
@@ -20,106 +22,155 @@ const RUBROS = [
     nombre: "Alimentos y almacén",
     emoji: "🛒",
     categorias: [
-      "Almacén / Alimentos", "Supermercado / Almacén", "Kiosco", "Kiosco / Almacén",
-      "Carnicería", "Pollería", "Panadería", "Panadería / Cafetería", "Pastelería",
-      "Verdulería", "Verdulería / Mercado", "Mercado / Alimentos frescos",
-      "Lácteos / Quesería", "Quesería / Fiambrería", "Dietética",
-      "Dietética / Suplementos", "Vinoteca"
+      "Carnicería",
+      "Dietética / Suplementos",
+      "Kiosco",
+      "Lácteos / Quesería",
+      "Panadería",
+      "Pastelería",
+      "Pollería",
+      "Supermercado",
+      "Verdulería",
+      "Vinoteca"
     ]
   },
   {
     nombre: "Gastronomía y salidas",
     emoji: "🍽️",
     categorias: [
-      "Gastronomía", "Restaurante", "Restaurante / Bar", "Bar", "Bar / Salón",
-      "Cafetería / Bar", "Cervecería / Pizzería", "Hamburguesería / Cervecería",
-      "Pizzería", "Rotisería / Comida para llevar", "Heladería", "Heladería / Postres"
+      "Heladería / Yogurtería",
+      "Restaurante / Bar",
+      "Rotisería / Comida para llevar"
     ]
   },
   {
     nombre: "Ropa y moda",
     emoji: "👕",
     categorias: [
-      "Tienda de ropa", "Accesorios de moda", "Lencería", "Zapatería",
-      "Confecciones / Uniformes"
+      "Accesorios de moda",
+      "Tienda de ropa",
+      "Zapatería"
     ]
   },
   {
     nombre: "Comercios, hogar y regalos",
     emoji: "🎁",
     categorias: [
-      "Comercio", "Tienda general", "Galería comercial", "Regalería", "Cotillón",
-      "Hogar / Deco", "Muebles y deco", "Electrodomésticos / Hogar", "Mercería",
-      "Telas / Mercería", "Pañalera", "Artículos deportivos", "Pesca y camping",
-      "Estampados / Personalizados", "Imprenta"
+      "Cotillón",
+      "Electrodomésticos / Hogar",
+      "Hogar / Deco",
+      "Imprenta / Estampados",
+      "Mercería",
+      "Muebles y deco",
+      "Pañalera",
+      "Pesca y camping",
+      "Regalería",
+      "Telas / Mercería"
     ]
   },
   {
     nombre: "Tecnología y celulares",
     emoji: "📱",
-    categorias: ["Celulares y accesorios", "Telefonía / Celulares", "Informática"]
+    categorias: [
+      "Celulares y accesorios",
+      "Informática"
+    ]
   },
   {
     nombre: "Construcción y ferretería",
     emoji: "🔨",
     categorias: [
-      "Corralón / Materiales de construcción", "Ferretería",
-      "Ferretería / Materiales de construcción", "Maderera", "Sanitarios", "Electricidad"
+      "Corralón / Materiales de construcción / Ferretería",
+      "Electricidad",
+      "Maderera",
+      "Sanitarios"
     ]
   },
   {
     nombre: "Autos y transporte",
     emoji: "🚗",
     categorias: [
-      "Estación de servicio", "Gomería", "Taller mecánico", "Repuestos / Autopartes",
-      "Repuestos / Lubricentro", "Lavadero de autos", "Transporte", "Transporte / Fletes"
+      "Estación de servicio",
+      "Gomería",
+      "Lavadero de autos",
+      "Repuestos / Autopartes",
+      "Repuestos / Lubricentro",
+      "Taller mecánico",
+      "Transporte",
+      "Fletes"
     ]
   },
   {
     nombre: "Salud",
     emoji: "🩺",
     categorias: [
-      "Farmacia", "Laboratorio", "Odontología", "Óptica", "Prepaga / Salud", "Salud",
-      "Salud / Hospital", "Salud / Médico", "Salud / Obstetricia"
+      "Farmacia",
+      "Laboratorio",
+      "Odontología",
+      "Prepagas",
+      "Hospital",
+      "Medicina clínica",
+      "Obstetricia",
+      "Óptica"
     ]
   },
   {
     nombre: "Belleza y cuidado personal",
     emoji: "💇",
-    categorias: ["Peluquería", "Barbería", "Uñas / Manicura"]
+    categorias: [
+      "Barbería",
+      "Peluquería",
+      "Uñas / Manicura"
+    ]
   },
   {
     nombre: "Deporte y clubes",
     emoji: "⚽",
     categorias: [
-      "Gimnasio", "Gimnasio / Boxeo", "Club", "Danza", "Escuela de equitación",
-      "Sociedad de fomento / Gimnasio"
+      "Clubes deportivos",
+      "Danza",
+      "Escuela de equitación",
+      "Gimnasio"
     ]
   },
   {
     nombre: "Eventos y turismo",
     emoji: "🎉",
     categorias: [
-      "Salón de eventos", "Sonido e iluminación para eventos", "Fotografía",
-      "Hotel / Alojamiento", "Turismo / Museo"
+      "Fotografía",
+      "Hotel / Alojamiento",
+      "Salón de eventos",
+      "Sonido e iluminación para eventos",
+      "Turismo / Museo"
     ]
   },
   {
     nombre: "Servicios profesionales",
     emoji: "💼",
-    categorias: ["Escribanía", "Estudio jurídico", "Seguros", "Cochería / Funeraria"]
+    categorias: [
+      "Cochería / Funeraria",
+      "Escribanía",
+      "Estudio jurídico",
+      "Seguros"
+    ]
   },
   {
     nombre: "Campo y veterinaria",
     emoji: "🐄",
-    categorias: ["Agro", "Veterinaria", "Veterinaria / Agroveterinaria"]
+    categorias: [
+      "Agro",
+      "Veterinaria / Agroveterinaria"
+    ]
   },
   {
     nombre: "Instituciones y servicios públicos",
     emoji: "🏛️",
     categorias: [
-      "Organismo público", "Organismo público / Cultura", "Servicios públicos",
-      "Seguridad", "Institución comercial", "Educación / Estética"
+      "Educación / Estética",
+      "Organismo público",
+      "Cultura",
+      "Policia",
+      "Servicios públicos"
     ]
   }
 ];
