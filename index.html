@@ -132,6 +132,8 @@
     font-size: 0.85rem; font-weight: 600; color: var(--acento); text-decoration: none;
   }
   .card .redes-link:hover { text-decoration: underline; }
+  .card .productos { margin: 0; font-size: 0.88rem; color: var(--texto-suave); overflow-wrap: anywhere; }
+  .card .productos strong { color: var(--texto); font-weight: 600; }
   .card .etiquetas { display: flex; flex-wrap: wrap; gap: 6px; }
   .card .habilitacion {
     align-self: flex-start; display: inline-flex; align-items: center; gap: 5px;
@@ -327,9 +329,15 @@ function singular(palabra) {
   if (palabra.length > 3 && palabra.endsWith("s")) return palabra.slice(0, -1);
   return palabra;
 }
+/* Palabras que la gente escribe pero no sirven para buscar ("quiero comprar un reloj" busca "reloj") */
+const PALABRAS_VACIAS = new Set(("quiero comprar compro busco buscar necesito necesitaria donde venden vende " +
+  "un una unos unas el la los las de del al a en para por con que y o mi me se hay algun alguna alguien " +
+  "lugar negocio tienda local pinto general").split(" "));
 function coincide(texto, consulta) {
   const t = normalizar(texto);
-  return consulta.split(/\s+/).filter(Boolean).every(p => t.includes(singular(p)));
+  const palabras = consulta.split(/\s+/).filter(p => p && !PALABRAS_VACIAS.has(p));
+  if (palabras.length === 0) return true;
+  return palabras.every(p => t.includes(singular(p)));
 }
 
 function linkInstagram(valor) {
@@ -356,7 +364,7 @@ function renderizar() {
   const cat = document.getElementById("filtroCategoria").value;
 
   const filtradas = entradasTodas.filter(e => {
-    const matchQ = !q || coincide(e.nombre + " " + e.categorias.join(" ") + " " + e.rubros.map(r => r.nombre).join(" ") + " " + e.descripcion + " " + e.zona, q);
+    const matchQ = !q || coincide(e.nombre + " " + e.productos + " " + e.categorias.join(" ") + " " + e.rubros.map(r => r.nombre).join(" ") + " " + e.descripcion + " " + e.zona, q);
     const matchRubro = !rubroElegido || e.rubros.some(r => r.nombre === rubroElegido);
     const matchCat = !cat || e.categorias.includes(cat);
     const matchHab = !document.getElementById("filtroHabilitado").checked || e.habilitado === true;
@@ -391,6 +399,7 @@ function renderizar() {
       ${e.habilitado === true ? `<span class="habilitacion si" title="Tiene local comercial habilitado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Comercio habilitado</span>` : ""}
       ${e.habilitado === false ? `<span class="habilitacion no" title="Emprendimiento sin local habilitado">🏠 Emprendimiento</span>` : ""}
       ${e.descripcion ? `<p class="descripcion">${escaparHtml(e.descripcion)}</p>` : ""}
+      ${e.productos ? `<p class="productos"><strong>Vende:</strong> ${escaparHtml(e.productos)}</p>` : ""}
       <div class="fila-contacto">
         ${e.telefono ? `<a href="${linkWhatsapp(e.telefono)}" target="_blank" rel="noopener">💬 ${escaparHtml(e.telefono)}</a>` : ""}
         ${e.zona ? `<span>📍 ${escaparHtml(e.zona)}</span>` : ""}
@@ -446,7 +455,10 @@ function cargarDatosSheet(respuesta) {
     const idxZona = buscarColumna(headers, "zona", "barrio");
     const idxRedes = buscarColumna(headers, "instagram", "facebook", "redes");
     const idxPublicado = buscarColumna(headers, "public");
-    const idxHabilitado = buscarColumna(headers, "habilitad");
+    // La columna que completás vos se llama exactamente "Habilitado" (no confundir con la foto del formulario)
+    let idxHabilitado = headers.findIndex(h => normalizar(h) === "habilitado");
+    if (idxHabilitado < 0) idxHabilitado = buscarColumna(headers, "habilitado");
+    const idxProductos = buscarColumna(headers, "palabras clave", "que vend", "productos", "que ofrec");
 
     const val = (row, idx) => (idx >= 0 && row.c[idx] && row.c[idx].v != null) ? row.c[idx].v : "";
 
@@ -460,6 +472,7 @@ function cargarDatosSheet(respuesta) {
         redes: val(row, idxRedes),
         publicado: val(row, idxPublicado),
         habilitado: valorHabilitado(val(row, idxHabilitado)),
+        productos: val(row, idxProductos).toString(),
       }))
       .filter(e => idxPublicado < 0 ? true : esPublicado(e.publicado)) // si no hay columna "Publicado", muestra todo
       .map(e => {
