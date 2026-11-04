@@ -196,6 +196,36 @@
   }
   .cta a.boton:hover { transform: translateY(-1px); }
 
+  /* ---------- Teléfonos útiles ---------- */
+  .utiles { max-width: 880px; margin: 0 auto 22px; padding: 0 16px; }
+  .utiles-caja {
+    background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio);
+    padding: 14px 16px;
+  }
+  .utiles h2 {
+    margin: 0 0 10px; font-size: 0.95rem; font-weight: 700; color: var(--texto);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .utiles h2 span.nota { font-weight: 400; color: var(--texto-suave); font-size: 0.82rem; }
+  .utiles-lista { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .utiles-lista a {
+    display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+    padding: 8px 12px; border-radius: 999px; border: 1px solid var(--borde);
+    background: var(--fondo); color: var(--texto); font-size: 0.9rem; white-space: nowrap;
+  }
+  .utiles-lista a:hover { border-color: var(--acento); }
+  .utiles-lista a strong { color: var(--acento); font-weight: 700; }
+  @media (max-width: 600px) {
+    .utiles-lista { display: grid; grid-template-columns: 1fr 1fr; }
+    .utiles-lista li { display: flex; }
+    .utiles-lista li a { width: 100%; }
+    .utiles-lista a {
+      flex-direction: column; align-items: flex-start; gap: 2px; border-radius: 12px;
+      white-space: normal; height: 100%; box-sizing: border-box; font-size: 0.85rem;
+    }
+    .utiles-lista a strong { font-size: 0.95rem; }
+  }
+
   footer.pie {
     margin-top: 28px; font-size: 0.8rem; color: var(--texto-suave); text-align: center;
   }
@@ -212,6 +242,13 @@
   <p class="kicker">La guía de negocios y servicios de General Pinto</p>
   <p class="subt">Comercios, oficios y emprendimientos del pueblo, todo en un solo lugar.</p>
 </div>
+
+<section class="utiles" aria-labelledby="utilesTitulo">
+  <div class="utiles-caja">
+    <h2 id="utilesTitulo">📞 Teléfonos útiles <span class="nota">Tocá para llamar</span></h2>
+    <ul class="utiles-lista" id="utilesLista"></ul>
+  </div>
+</section>
 
 <div class="controles-envoltura">
   <div class="controles">
@@ -512,6 +549,55 @@ function cargarDatosSheet(respuesta) {
   }
 }
 
+/* ---------- Teléfonos útiles ----------
+   Se leen de la pestaña "Teléfonos útiles" de la misma planilla
+   (columnas: Nombre | Teléfono). Si la pestaña no existe o está
+   vacía, se muestran estos números nacionales. */
+const HOJA_TELEFONOS = "Teléfonos útiles";
+const TELEFONOS_BASE = [
+  { nombre: "Policía", telefono: "911" },
+  { nombre: "Bomberos", telefono: "100" },
+  { nombre: "Emergencias médicas", telefono: "107" },
+  { nombre: "Defensa Civil", telefono: "103" }
+];
+
+function mostrarTelefonos(lista) {
+  const ul = document.getElementById("utilesLista");
+  ul.innerHTML = "";
+  lista.forEach(t => {
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    a.href = "tel:" + t.telefono.replace(/[^\d+]/g, "");
+    const nombre = document.createElement("span");
+    nombre.textContent = t.nombre;
+    const numero = document.createElement("strong");
+    numero.textContent = t.telefono;
+    a.append(nombre, numero);
+    li.appendChild(a);
+    ul.appendChild(li);
+  });
+}
+mostrarTelefonos(TELEFONOS_BASE);
+
+function cargarTelefonos(json) {
+  try {
+    const headers = json.table.cols.map(c => (c.label || "").trim());
+    // Si Google devolvió la hoja de negocios (pasa cuando la pestaña no existe), la ignoramos
+    if (headers.some(h => ["marca temporal", "negocio", "emprendimiento"].some(p => normalizar(h).includes(p)))) return;
+    let idxNombre = headers.findIndex(h => ["nombre", "servicio", "lugar"].some(p => normalizar(h).includes(p)));
+    let idxTel = headers.findIndex(h => ["telefono", "numero", "celular"].some(p => normalizar(h).includes(p)));
+    if (idxNombre < 0) idxNombre = 0;
+    if (idxTel < 0) idxTel = 1;
+    const celda = (row, i) => (row.c && row.c[i] && row.c[i].v != null) ? (row.c[i].f || row.c[i].v).toString().trim() : "";
+    const lista = json.table.rows
+      .map(r => ({ nombre: celda(r, idxNombre), telefono: celda(r, idxTel) }))
+      .filter(t => t.nombre && /\d/.test(t.telefono));
+    if (lista.length) mostrarTelefonos(lista);
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 document.getElementById("buscador").addEventListener("input", renderizar);
 document.getElementById("filtroCategoria").addEventListener("change", renderizar);
 document.getElementById("filtroHabilitado").addEventListener("change", renderizar);
@@ -524,6 +610,9 @@ if (SHEET_ID.startsWith("PEGAR_AQUI")) {
   const script = document.createElement("script");
   script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json;responseHandler:cargarDatosSheet&sheet=${encodeURIComponent(NOMBRE_HOJA)}`;
   document.body.appendChild(script);
+  const scriptTel = document.createElement("script");
+  scriptTel.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json;responseHandler:cargarTelefonos&sheet=${encodeURIComponent(HOJA_TELEFONOS)}`;
+  document.body.appendChild(scriptTel);
 }
 </script>
 </body>
