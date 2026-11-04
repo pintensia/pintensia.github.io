@@ -449,7 +449,11 @@ function cargarDatosSheet(respuesta) {
 
     let idxNombre = buscarColumna(headers, "negocio", "emprendimiento"); // primero el nombre del negocio
     if (idxNombre < 0) idxNombre = buscarColumna(headers, "nombre");
-    const idxCategoria = buscarColumna(headers, "categoria", "oficio", "rubro");
+    // Preguntas de casillas por rubro: su título empieza con "Categoría:" (ej. "Categoría: Salud")
+    const esCasillaRubro = h => /^categorias?\s*:/.test(normalizar(h));
+    const idxCasillas = headers.map((h, i) => esCasillaRubro(h) ? i : -1).filter(i => i >= 0);
+    const idxCategoria = headers.findIndex(h => !esCasillaRubro(h) &&
+      ["categoria", "oficio", "rubro"].some(p => normalizar(h).includes(p)));
     const idxTelefono = buscarColumna(headers, "telefono", "whatsapp", "celular");
     const idxDescripcion = buscarColumna(headers, "descrip");
     const idxZona = buscarColumna(headers, "zona", "barrio");
@@ -466,7 +470,10 @@ function cargarDatosSheet(respuesta) {
     entradasTodas = tabla.rows
       .map(row => ({
         nombre: val(row, idxNombre),
-        categoria: val(row, idxCategoria),
+        // Junta la categoría de la columna vieja (separada por ";") y las casillas (Google las separa con ",")
+        categoria: [val(row, idxCategoria).toString()]
+          .concat(idxCasillas.map(i => val(row, i).toString().split(",").join(";")))
+          .filter(Boolean).join(";"),
         telefono: val(row, idxTelefono),
         descripcion: val(row, idxDescripcion),
         zona: [val(row, idxDireccion), val(row, idxZona)].filter(Boolean).join(" · "),
