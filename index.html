@@ -3,36 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PintensIA — Directorio de oficios y servicios</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛠️%3C/text%3E%3C/svg%3E">
+<title>Pintensia — Guía de negocios y servicios de General Pinto</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%231d49a7'/%3E%3Ccircle cx='50' cy='50' r='18' fill='%23f6f3eb'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
 <style>
   :root {
     color-scheme: light dark;
-    --fondo: #fdf3e3;
+    /* Colores de la marca Pintensia: azul del logo sobre fondo crema */
+    --fondo: #f6f3eb;
     --superficie: #ffffff;
-    --texto: #241c14;
-    --texto-suave: #7a6a54;
-    --borde: #f0dfc4;
-    --sombra: 0 1px 2px rgba(120,50,0,0.05), 0 8px 24px rgba(120,50,0,0.08);
-    --acento: #e2521f;
-    --acento-suave: #ffe4cf;
-    --anillo: rgba(226,82,31,0.28);
+    --texto: #18224a;
+    --texto-suave: #5a6284;
+    --borde: #e7e1d2;
+    --sombra: 0 1px 2px rgba(24,34,74,0.05), 0 8px 24px rgba(24,34,74,0.07);
+    --acento: #1d49a7;
+    --acento-suave: #e4eaf8;
+    --anillo: rgba(29,73,167,0.25);
     --radio: 16px;
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --fondo: #191330;
-      --superficie: #241c3d;
-      --texto: #f5f0e8;
-      --texto-suave: #b7ade0;
-      --borde: #362a57;
+      --fondo: #0f1631;
+      --superficie: #182146;
+      --texto: #f6f3eb;
+      --texto-suave: #aab3d8;
+      --borde: #27315e;
       --sombra: 0 1px 2px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.4);
-      --acento: #ff8a5c;
-      --acento-suave: #2e2050;
-      --anillo: rgba(255,138,92,0.32);
+      --acento: #8fb0ff;
+      --acento-suave: #1f2c5c;
+      --anillo: rgba(143,176,255,0.3);
     }
   }
   * { box-sizing: border-box; }
@@ -43,26 +44,15 @@
   }
   .envoltura { max-width: 880px; margin: 0 auto; padding: 0 16px 64px; }
 
-  /* Hero */
-  .hero {
-    background: linear-gradient(180deg, var(--acento-suave), var(--fondo) 85%);
-    padding: 48px 16px 32px; text-align: center; border-bottom: 1px solid var(--borde);
-  }
-  .hero .marca {
-    display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem;
-    color: var(--acento); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
-    margin-bottom: 14px;
-  }
-  .hero h1 {
-    font-size: clamp(1.8rem, 4vw, 2.4rem); font-weight: 800; margin: 0 0 10px;
-    letter-spacing: -0.02em;
-  }
+  /* Encabezado con el logo */
+  .hero { padding: 56px 16px 36px; text-align: center; }
+  .hero .logo { width: min(300px, 70vw); height: auto; display: block; margin: 0 auto 18px; }
   .hero .kicker {
-    font-size: 1.05rem; font-weight: 700; margin: 0 0 10px; color: var(--texto);
+    font-family: "Outfit", "Manrope", sans-serif; font-size: clamp(1.15rem, 3vw, 1.4rem);
+    font-weight: 600; margin: 0 0 8px; color: var(--texto);
   }
-  .hero p.subt {
-    color: var(--texto-suave); font-size: 1.02rem; max-width: 520px; margin: 0 auto;
-  }
+  .hero p.subt { color: var(--texto-suave); font-size: 1rem; max-width: 520px; margin: 0 auto; }
+  .hero h1 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
   /* Controles */
   .controles-envoltura {
@@ -92,6 +82,23 @@
     outline: none; border-color: var(--acento); box-shadow: 0 0 0 4px var(--anillo);
   }
 
+  /* Rubros (botones grandes de categorías) */
+  .rubros {
+    margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .rubro {
+    flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px;
+    border: 1px solid var(--borde); background: var(--superficie); color: var(--texto);
+    border-radius: 999px; padding: 8px 14px; font: inherit; font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; transition: background .15s, border-color .15s;
+  }
+  .rubro:hover { border-color: var(--acento); }
+  @media (max-width: 600px) {
+    .rubros { flex-wrap: nowrap; overflow-x: auto; margin-left: -16px; margin-right: -16px; padding: 0 16px 4px; }
+  }
+  .rubro[aria-pressed="true"] { background: var(--acento); border-color: var(--acento); color: var(--fondo); }
+  .rubro .cuenta { font-weight: 500; opacity: 0.7; font-size: 0.8rem; }
+
   .resumen {
     max-width: 880px; margin: 18px auto 4px; padding: 0 16px;
     font-size: 0.88rem; color: var(--texto-suave);
@@ -113,8 +120,8 @@
     background: var(--cat-bg, var(--acento-suave)); color: var(--cat-fg, var(--acento));
     border-radius: 999px; padding: 4px 12px;
   }
-  .card h3 { margin: 2px 0 0; font-size: 1.08rem; font-weight: 700; letter-spacing: -0.01em; }
-  .card .descripcion { margin: 0; color: var(--texto-suave); font-size: 0.92rem; }
+  .card h3 { margin: 2px 0 0; font-family: "Outfit", "Manrope", sans-serif; font-size: 1.15rem; font-weight: 600; letter-spacing: -0.005em; }
+  .card .descripcion { margin: 0; color: var(--texto-suave); font-size: 0.92rem; overflow-wrap: anywhere; }
   .card .fila-contacto {
     margin-top: auto; padding-top: 10px; border-top: 1px dashed var(--borde);
     display: flex; flex-wrap: wrap; gap: 10px; font-size: 0.88rem; color: var(--texto-suave);
@@ -125,6 +132,23 @@
     font-size: 0.85rem; font-weight: 600; color: var(--acento); text-decoration: none;
   }
   .card .redes-link:hover { text-decoration: underline; }
+  .card .productos { margin: 0; font-size: 0.88rem; color: var(--texto-suave); overflow-wrap: anywhere; }
+  .card .productos strong { color: var(--texto); font-weight: 600; }
+  .card .etiquetas { display: flex; flex-wrap: wrap; gap: 6px; }
+  .card .habilitacion {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: 5px;
+    font-size: 0.78rem; font-weight: 600; border-radius: 999px; padding: 3px 10px;
+  }
+  .card .habilitacion svg { width: 14px; height: 14px; }
+  .habilitacion.si { background: var(--acento-suave); color: var(--acento); }
+  .habilitacion.no { background: color-mix(in srgb, var(--texto-suave) 12%, transparent); color: var(--texto-suave); }
+  .solo-habilitados {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 0.9rem; color: var(--texto-suave);
+    cursor: pointer; user-select: none;
+  }
+  .solo-habilitados input { width: 18px; height: 18px; accent-color: var(--acento); }
+  .fila-resumen { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin: 18px 0 4px; }
+  .fila-resumen .resumen { margin: 0; padding: 0; }
 
   /* Categorías de color (8 variantes, con versión dark) */
   .cat-0 { --cat-bg:#eef2ff; --cat-fg:#4338ca; }
@@ -166,7 +190,7 @@
   }
   .cta p { margin: 0 0 14px; color: var(--texto); font-size: 1rem; }
   .cta a.boton {
-    display: inline-block; background: var(--acento); color: #fff; font-weight: 700;
+    display: inline-block; background: var(--acento); color: var(--fondo); font-weight: 700;
     padding: 12px 24px; border-radius: 999px; text-decoration: none; font-size: 0.95rem;
     box-shadow: 0 4px 12px var(--anillo); transition: transform .15s ease;
   }
@@ -180,10 +204,13 @@
 <body>
 
 <div class="hero">
-  <span class="marca">🏘️ General Pinto</span>
-  <h1>PintensIA</h1>
-  <p class="kicker">Directorio de oficios y servicios</p>
-  <p class="subt">Encontrá plomeros, electricistas, profes, gastronomía y más servicios de vecinos de Pinto, todo en un solo lugar.</p>
+  <picture>
+    <source srcset="logo-claro.png" media="(prefers-color-scheme: dark)">
+    <img class="logo" src="logo.png" alt="Pintensia" width="439" height="98">
+  </picture>
+  <h1>Pintensia</h1>
+  <p class="kicker">La guía de negocios y servicios de General Pinto</p>
+  <p class="subt">Comercios, oficios y emprendimientos del pueblo, todo en un solo lugar.</p>
 </div>
 
 <div class="controles-envoltura">
@@ -199,7 +226,13 @@
 </div>
 
 <div class="envoltura">
-  <p class="resumen" id="resumen"></p>
+  <div class="rubros" id="rubros" role="toolbar" aria-label="Rubros"></div>
+  <div class="fila-resumen">
+    <p class="resumen" id="resumen"></p>
+    <label class="solo-habilitados" id="filtroHabilitadoCaja" hidden>
+      <input type="checkbox" id="filtroHabilitado"> Solo comercios habilitados
+    </label>
+  </div>
 
   <div id="estado">
     <div class="spinner"></div>
@@ -209,7 +242,7 @@
   <div class="lista" id="lista"></div>
 
   <div class="cta">
-    <p>¿Ofrecés un servicio en Pinto?</p>
+    <p>¿Tenés un comercio, un oficio o un emprendimiento en Pinto?</p>
     <a class="boton" id="linkFormulario" href="#" target="_blank" rel="noopener">Sumate al directorio →</a>
   </div>
 
@@ -218,6 +251,7 @@
   </footer>
 </div>
 
+<script src="categorias.js"></script>
 <script>
 /* ============================================================
    CONFIGURACIÓN — completar con tus datos reales
@@ -252,6 +286,15 @@ function buscarColumna(headers, ...pistas) {
   return idx;
 }
 
+/* Columna "Habilitado": "si" = comercio habilitado, "no" = emprendimiento, vacío = no se muestra nada */
+function valorHabilitado(valor) {
+  const v = normalizar(valor);
+  if (!v) return null;
+  if (v === "si" || v === "true" || v === "x" || v.startsWith("habilitad")) return true;
+  if (v === "no" || v === "false" || v.startsWith("no ") || v.startsWith("emprend")) return false;
+  return null;
+}
+
 function esPublicado(valor) {
   const v = normalizar(valor);
   return v === "si" || v === "sí" || v === "true" || v === "x" || v === "publicado";
@@ -271,15 +314,61 @@ function escaparHtml(texto) {
 }
 
 let entradasTodas = [];
+let rubroElegido = "";
+
+/* Busca a qué rubro pertenece una categoría (según categorias.js) */
+const mapaRubros = new Map();
+RUBROS.forEach(r => r.categorias.forEach(c => mapaRubros.set(normalizar(c), r)));
+function rubroDe(categoria) {
+  return mapaRubros.get(normalizar(categoria)) || RUBRO_OTROS;
+}
+
+/* "carnicerias" encuentra "Carnicería": quitamos el plural de cada palabra */
+function singular(palabra) {
+  if (palabra.length > 4 && palabra.endsWith("es") && !/[aeiou]es$/.test(palabra)) return palabra.slice(0, -2);
+  if (palabra.length > 3 && palabra.endsWith("s")) return palabra.slice(0, -1);
+  return palabra;
+}
+/* Palabras que la gente escribe pero no sirven para buscar ("quiero comprar un reloj" busca "reloj") */
+const PALABRAS_VACIAS = new Set(("quiero comprar compro busco buscar necesito necesitaria donde venden vende " +
+  "un una unos unas el la los las de del al a en para por con que y o mi me se hay algun alguna alguien " +
+  "lugar negocio tienda local pinto general").split(" "));
+function coincide(texto, consulta) {
+  const t = normalizar(texto);
+  const palabras = consulta.split(/\s+/).filter(p => p && !PALABRAS_VACIAS.has(p));
+  if (palabras.length === 0) return true;
+  return palabras.every(p => t.includes(singular(p)));
+}
+
+function linkInstagram(valor) {
+  const v = (valor || "").toString().trim();
+  if (!v) return "";
+  if (/^https?:\/\//i.test(v)) return v;
+  if (/^(www\.)?instagram\.com\//i.test(v)) return "https://" + v;
+  return "https://www.instagram.com/" + v.replace(/^@/, "").replace(/\/+$/, "") + "/";
+}
+
+function linkWhatsapp(telefono) {
+  let n = (telefono || "").toString().replace(/[^0-9]/g, "");
+  if (!n) return "";
+  if (!n.startsWith("54")) n = "549" + n.replace(/^0/, "");
+  return "https://wa.me/" + n;
+}
+
+function linkMaps(nombre) {
+  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(nombre + " General Pinto Buenos Aires");
+}
 
 function renderizar() {
   const q = normalizar(document.getElementById("buscador").value);
   const cat = document.getElementById("filtroCategoria").value;
 
   const filtradas = entradasTodas.filter(e => {
-    const matchQ = !q || normalizar(e.nombre + " " + e.categoria + " " + e.descripcion + " " + e.zona).includes(q);
-    const matchCat = !cat || e.categoria === cat;
-    return matchQ && matchCat;
+    const matchQ = !q || coincide(e.nombre + " " + e.productos + " " + e.dedica + " " + e.categorias.join(" ") + " " + e.rubros.map(r => r.nombre).join(" ") + " " + e.descripcion + " " + e.zona, q);
+    const matchRubro = !rubroElegido || e.rubros.some(r => r.nombre === rubroElegido);
+    const matchCat = !cat || e.categorias.includes(cat);
+    const matchHab = !document.getElementById("filtroHabilitado").checked || e.habilitado === true;
+    return matchQ && matchRubro && matchCat && matchHab;
   });
 
   const lista = document.getElementById("lista");
@@ -305,21 +394,48 @@ function renderizar() {
   resumen.textContent = `${filtradas.length} de ${entradasTodas.length} servicio${entradasTodas.length === 1 ? "" : "s"}`;
   lista.innerHTML = filtradas.map(e => `
     <div class="card">
-      <span class="categoria ${claseCategoria(e.categoria)}">${escaparHtml(e.categoria) || "General"}</span>
+      ${e.categorias.map((c, i) => `<span class="categoria ${claseCategoria(rubroDe(c).nombre)}">${rubroDe(c).emoji} ${escaparHtml(c)}</span>`).join("") || `<span class="categoria">General</span>`}
       <h3>${escaparHtml(e.nombre) || "(sin nombre)"}</h3>
+      ${e.habilitado === true ? `<span class="habilitacion si" title="Tiene local comercial habilitado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Comercio habilitado</span>` : ""}
+      ${e.habilitado === false ? `<span class="habilitacion no" title="Emprendimiento sin local habilitado">🏠 Emprendimiento</span>` : ""}
       ${e.descripcion ? `<p class="descripcion">${escaparHtml(e.descripcion)}</p>` : ""}
+      ${e.productos ? `<p class="productos"><strong>Ofrece:</strong> ${escaparHtml(e.productos)}</p>` : ""}
+      ${e.horario ? `<p class="productos"><strong>Horario:</strong> ${escaparHtml(e.horario)}</p>` : ""}
       <div class="fila-contacto">
-        ${e.telefono ? `<a href="tel:${escaparHtml(e.telefono).replace(/[^0-9+]/g, "")}">📞 ${escaparHtml(e.telefono)}</a>` : ""}
+        ${e.telefono ? `<a href="${linkWhatsapp(e.telefono)}" target="_blank" rel="noopener">💬 ${escaparHtml(e.telefono)}</a>` : ""}
         ${e.zona ? `<span>📍 ${escaparHtml(e.zona)}</span>` : ""}
-        ${e.redes ? `<a class="redes-link" href="${escaparHtml(e.redes)}" target="_blank" rel="noopener">Ver redes ↗</a>` : ""}
+        ${e.redes ? `<a class="redes-link" href="${escaparHtml(linkInstagram(e.redes))}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}
+        ${/^(https?:\/\/|www\.)/i.test(e.web) ? `<a class="redes-link" href="${escaparHtml(/^www\./i.test(e.web) ? "https://" + e.web : e.web)}" target="_blank" rel="noopener">Web ↗</a>` : ""}
+        <a class="redes-link" href="${linkMaps(e.direccion ? e.nombre + " " + e.direccion : e.nombre)}" target="_blank" rel="noopener">Ver en Maps ↗</a>
       </div>
     </div>
   `).join("");
 }
 
+function poblarRubros() {
+  const cont = document.getElementById("rubros");
+  const cuentas = new Map();
+  entradasTodas.forEach(e => e.rubros.forEach(r => cuentas.set(r.nombre, (cuentas.get(r.nombre) || 0) + 1)));
+  const lista = [...RUBROS, RUBRO_OTROS].filter(r => cuentas.has(r.nombre));
+  const botones = [{ nombre: "", emoji: "✨", etiqueta: "Todos", cuenta: entradasTodas.length }]
+    .concat(lista.map(r => ({ nombre: r.nombre, emoji: r.emoji, etiqueta: r.nombre, cuenta: cuentas.get(r.nombre) })));
+  cont.innerHTML = botones.map(b => `
+    <button type="button" class="rubro" data-rubro="${escaparHtml(b.nombre)}" aria-pressed="${b.nombre === rubroElegido}">
+      <span>${b.emoji}</span> ${escaparHtml(b.etiqueta)} <span class="cuenta">${b.cuenta}</span>
+    </button>`).join("");
+  cont.querySelectorAll(".rubro").forEach(btn => btn.addEventListener("click", () => {
+    rubroElegido = btn.dataset.rubro;
+    cont.querySelectorAll(".rubro").forEach(b => b.setAttribute("aria-pressed", b === btn));
+    poblarCategorias();
+    renderizar();
+  }));
+}
+
 function poblarCategorias() {
   const select = document.getElementById("filtroCategoria");
-  const categorias = [...new Set(entradasTodas.map(e => e.categoria).filter(Boolean))].sort();
+  select.innerHTML = '<option value="">Todas las categorías</option>';
+  const categorias = [...new Set(entradasTodas
+    .flatMap(e => e.categorias.filter(c => !rubroElegido || rubroDe(c).nombre === rubroElegido)))].sort((a, b) => a.localeCompare(b, "es"));
   categorias.forEach(c => {
     const opt = document.createElement("option");
     opt.value = c;
@@ -333,28 +449,59 @@ function cargarDatosSheet(respuesta) {
     const tabla = respuesta.table;
     const headers = tabla.cols.map(c => c.label || "");
 
-    const idxNombre = buscarColumna(headers, "nombre", "negocio");
-    const idxCategoria = buscarColumna(headers, "categoria", "oficio", "rubro");
-    const idxTelefono = buscarColumna(headers, "telefono", "whatsapp", "celular");
+    // Cada dato se busca por palabras del título de la columna, así podés reordenar o renombrar preguntas
+    const exacta = nombre => headers.findIndex(h => normalizar(h) === nombre);
+    const todas = (...pistas) => headers.map((h, i) => pistas.some(p => normalizar(h).includes(normalizar(p))) ? i : -1).filter(i => i >= 0);
+
+    let idxNombre = buscarColumna(headers, "negocio", "emprendimiento"); // primero el nombre del negocio
+    if (idxNombre < 0) idxNombre = buscarColumna(headers, "nombre");
+    // Categorías: toda columna cuyo título EMPIECE con "Categoría" (ej. "Categoría", "Categoría u oficio")
+    const idxCategorias = headers.map((h, i) => normalizar(h).startsWith("categoria") ? i : -1).filter(i => i >= 0);
+    const idxDedica = headers.findIndex((h, i) => !idxCategorias.includes(i) && ["dedic", "rubro", "oficio"].some(p => normalizar(h).includes(p)));
+    const idxTelefonos = todas("whatsapp", "telefono", "celular");
     const idxDescripcion = buscarColumna(headers, "descrip");
     const idxZona = buscarColumna(headers, "zona", "barrio");
-    const idxRedes = buscarColumna(headers, "instagram", "facebook", "redes");
-    const idxPublicado = buscarColumna(headers, "public");
+    const idxDireccion = buscarColumna(headers, "direccion");
+    const idxRedes = buscarColumna(headers, "instagram");
+    const idxWeb = buscarColumna(headers, "facebook", "pagina web");
+    const idxHorario = buscarColumna(headers, "horario");
+    let idxPublicado = exacta("publicado");
+    if (idxPublicado < 0) idxPublicado = buscarColumna(headers, "publicado");
+    // La columna que completás vos se llama exactamente "Habilitado" (no confundir con la pregunta del formulario)
+    let idxHabilitado = exacta("habilitado");
+    if (idxHabilitado < 0) idxHabilitado = buscarColumna(headers, "habilitado");
+    const idxProductos = buscarColumna(headers, "palabras clave", "productos", "que vend", "que ofrec");
 
-    const val = (row, idx) => (idx >= 0 && row.c[idx] && row.c[idx].v != null) ? row.c[idx].v : "";
+    const val = (row, idx) => (idx >= 0 && row.c[idx] && row.c[idx].v != null) ? row.c[idx].v.toString().trim() : "";
+    const primero = (row, idxs) => idxs.map(i => val(row, i)).find(Boolean) || "";
 
     entradasTodas = tabla.rows
       .map(row => ({
         nombre: val(row, idxNombre),
-        categoria: val(row, idxCategoria),
-        telefono: val(row, idxTelefono),
+        // Varias categorías se separan con ";" o ","
+        categoria: idxCategorias.map(i => val(row, i)).filter(Boolean).join(";").replace(/,/g, ";"),
+        dedica: val(row, idxDedica),
+        telefono: primero(row, idxTelefonos),
         descripcion: val(row, idxDescripcion),
-        zona: val(row, idxZona),
+        zona: [val(row, idxDireccion), val(row, idxZona)].filter(Boolean).join(" · "),
+        direccion: val(row, idxDireccion),
         redes: val(row, idxRedes),
+        web: val(row, idxWeb),
+        horario: val(row, idxHorario),
         publicado: val(row, idxPublicado),
+        habilitado: valorHabilitado(val(row, idxHabilitado)),
+        productos: val(row, idxProductos),
       }))
-      .filter(e => idxPublicado < 0 ? true : esPublicado(e.publicado)); // si no hay columna "Publicado", muestra todo
+      .filter(e => idxPublicado < 0 ? true : esPublicado(e.publicado)) // si no hay columna "Publicado", muestra todo
+      .map(e => {
+        // Un negocio puede tener varias categorías separadas por ";"
+        const categorias = e.categoria.toString().split(";").map(c => c.trim()).filter(Boolean);
+        const rubros = [...new Set(categorias.map(rubroDe))];
+        return { ...e, categorias, rubros: rubros.length ? rubros : [RUBRO_OTROS] };
+      });
 
+    if (entradasTodas.some(e => e.habilitado === true)) document.getElementById("filtroHabilitadoCaja").hidden = false;
+    poblarRubros();
     poblarCategorias();
     renderizar();
   } catch (err) {
@@ -367,6 +514,7 @@ function cargarDatosSheet(respuesta) {
 
 document.getElementById("buscador").addEventListener("input", renderizar);
 document.getElementById("filtroCategoria").addEventListener("change", renderizar);
+document.getElementById("filtroHabilitado").addEventListener("change", renderizar);
 document.getElementById("estado").style.display = "block";
 
 if (SHEET_ID.startsWith("PEGAR_AQUI")) {
