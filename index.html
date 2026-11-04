@@ -202,6 +202,42 @@
     .utiles-lista a strong { font-size: 0.95rem; }
   }
 
+  /* ---------- Celular ---------- */
+  .utiles-caja summary { list-style: none; cursor: default; }
+  .utiles-caja summary::-webkit-details-marker { display: none; }
+  @media (max-width: 600px) {
+    /* Encabezado más chico, para que el buscador entre en la primera pantalla */
+    .hero { padding: 22px 16px 14px; }
+    .hero .logo { width: 170px; margin-bottom: 8px; }
+    .hero .kicker { font-size: 0.95rem; margin: 0; }
+    .hero p.subt { font-size: 0.82rem; margin-top: 4px; }
+
+    /* Teléfonos: una barra que se abre al tocarla */
+    .utiles { margin-bottom: 0; }
+    .utiles-caja { padding: 0; }
+    .utiles-caja summary { cursor: pointer; padding: 12px 14px; }
+    .utiles h2 { margin: 0; }
+    .utiles h2::after { content: "▾"; margin-left: auto; color: var(--texto-suave); transition: transform .15s; }
+    .utiles-caja[open] h2::after { transform: rotate(180deg); }
+    .utiles h2 span.nota { display: none; }
+    .utiles-caja[open] .utiles-lista { padding: 0 14px 14px; }
+
+    /* Arriba queda fijo solo el buscador; los rubros reemplazan al desplegable */
+    .controles { padding: 10px 16px; }
+    .controles select { display: none; }
+
+    /* Fichas más compactas y con botones fáciles de tocar */
+    .card { padding: 14px 16px; gap: 6px; }
+    .card:hover { transform: none; }
+    .card .fila-contacto { gap: 8px; padding-top: 10px; }
+    .card .fila-contacto a {
+      display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 999px;
+      border: 1px solid var(--borde); font-size: 0.85rem; font-weight: 600; color: var(--acento);
+    }
+    .card .fila-contacto a.boton-wa { background: #1f8f4e; border-color: #1f8f4e; color: #fff; }
+    .card .fila-contacto span { width: 100%; order: -1; }
+  }
+
   footer.pie {
     margin-top: 28px; font-size: 0.8rem; color: var(--texto-suave); text-align: center;
   }
@@ -219,10 +255,10 @@
 </div>
 
 <section class="utiles" aria-labelledby="utilesTitulo">
-  <div class="utiles-caja">
-    <h2 id="utilesTitulo">📞 Teléfonos útiles <span class="nota">Tocá para llamar</span></h2>
+  <details class="utiles-caja" id="utilesCaja" open>
+    <summary><h2 id="utilesTitulo">📞 Teléfonos útiles <span class="nota">Tocá para llamar</span></h2></summary>
     <ul class="utiles-lista" id="utilesLista"></ul>
-  </div>
+  </details>
 </section>
 
 <div class="controles-envoltura">
@@ -415,7 +451,7 @@ function renderizar() {
       ${e.productos ? `<p class="productos"><strong>Ofrece:</strong> ${escaparHtml(e.productos)}</p>` : ""}
       ${e.horario ? `<p class="productos"><strong>Horario:</strong> ${escaparHtml(e.horario)}</p>` : ""}
       <div class="fila-contacto">
-        ${e.telefono ? `<a href="${linkWhatsapp(e.telefono)}" target="_blank" rel="noopener">💬 ${escaparHtml(e.telefono)}</a>` : ""}
+        ${e.telefono ? `<a class="boton-wa" href="${linkWhatsapp(e.telefono)}" target="_blank" rel="noopener">💬 ${escaparHtml(e.telefono)}</a>` : ""}
         ${e.zona ? `<span>📍 ${escaparHtml(e.zona)}</span>` : ""}
         ${e.redes ? `<a class="redes-link" href="${escaparHtml(linkInstagram(e.redes))}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}
         ${/^(https?:\/\/|www\.)/i.test(e.web) ? `<a class="redes-link" href="${escaparHtml(/^www\./i.test(e.web) ? "https://" + e.web : e.web)}" target="_blank" rel="noopener">Web ↗</a>` : ""}
@@ -556,6 +592,12 @@ function mostrarTelefonos(lista) {
   });
 }
 mostrarTelefonos(TELEFONOS_BASE);
+// En el celular la barra de teléfonos arranca cerrada; en la compu, abierta y fija
+const cajaTelefonos = document.getElementById("utilesCaja");
+const esCelular = window.matchMedia("(max-width: 600px)");
+cajaTelefonos.open = !esCelular.matches;
+if (esCelular.matches) document.getElementById("buscador").placeholder = "¿Qué estás buscando?";
+cajaTelefonos.querySelector("summary").addEventListener("click", ev => { if (!esCelular.matches) ev.preventDefault(); });
 
 function cargarTelefonos(json) {
   try {
