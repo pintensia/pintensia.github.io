@@ -322,7 +322,8 @@ function claseCategoria(cat) {
 function escaparHtml(texto) {
   const div = document.createElement("div");
   div.textContent = texto || "";
-  return div.innerHTML;
+  // También las comillas, para que un dato de la planilla no pueda "romper" un link
+  return div.innerHTML.replace(/"/g, "&quot;").replace(/'/g, "&#39;");
 }
 
 let entradasTodas = [];
