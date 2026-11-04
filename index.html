@@ -245,6 +245,25 @@
     .card .fila-contacto span { width: 100%; order: -1; }
   }
 
+  /* ---------- Farmacia de turno ---------- */
+  .turno {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    background: var(--acento-suave); border: 1px solid var(--borde); border-radius: var(--radio);
+    padding: 12px 16px; margin-bottom: 10px;
+  }
+  .turno[hidden] { display: none; }
+  .turno-icono { font-size: 1.5rem; }
+  .turno-texto { display: flex; flex-direction: column; flex: 1; min-width: 160px; }
+  .turno-etiqueta { font-size: 0.78rem; font-weight: 700; color: var(--acento); text-transform: uppercase; letter-spacing: 0.04em; }
+  .turno-texto strong { font-size: 1.05rem; color: var(--texto); }
+  .turno-hasta { font-size: 0.8rem; color: var(--texto-suave); }
+  .turno-acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+  .turno-acciones a {
+    display: inline-flex; align-items: center; padding: 8px 12px; border-radius: 999px; text-decoration: none;
+    font-size: 0.85rem; font-weight: 600; background: var(--superficie); border: 1px solid var(--borde); color: var(--acento);
+  }
+  .turno-acciones a.boton-wa { background: #1f8f4e; border-color: #1f8f4e; color: #fff; }
+
   /* ---------- Instalar la app ---------- */
   .instalar {
     display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
@@ -277,6 +296,15 @@
 </div>
 
 <section class="utiles" aria-labelledby="utilesTitulo">
+  <div class="turno" id="farmaciaTurno" hidden>
+    <span class="turno-icono" aria-hidden="true">💊</span>
+    <div class="turno-texto">
+      <span class="turno-etiqueta">Farmacia de turno</span>
+      <strong id="turnoNombre"></strong>
+      <span class="turno-hasta" id="turnoHasta"></span>
+    </div>
+    <div class="turno-acciones" id="turnoAcciones"></div>
+  </div>
   <details class="utiles-caja" id="utilesCaja" open>
     <summary><h2 id="utilesTitulo">📞 Teléfonos útiles <span class="nota">Tocá para llamar</span></h2></summary>
     <ul class="utiles-lista" id="utilesLista"></ul>
@@ -577,6 +605,7 @@ function cargarDatosSheet(respuesta) {
     poblarRubros();
     poblarCategorias();
     renderizar();
+    mostrarFarmaciaTurno();
   } catch (err) {
     document.getElementById("estado").innerHTML =
       '<div class="icono">⚠️</div><div>Hubo un problema leyendo la planilla. Revisá que el SHEET_ID y el nombre de la hoja sean correctos.</div>';
@@ -639,6 +668,53 @@ function cargarTelefonos(json) {
     console.error(err);
   }
 }
+
+/* ---------- Farmacia de turno ----------
+   Las farmacias rotan de miércoles a miércoles, y el cambio es a las 8 de la mañana.
+   PARA EDITAR: "inicio" es un día en que empezó la PRIMERA farmacia de la lista,
+   y "orden" es la rotación. Si cambia el orden, cambiá la lista y la fecha. */
+const FARMACIAS_TURNO = {
+  inicio: "2026-11-04",   // miércoles en que empezó Farmacia Del Río
+  horaCambio: 8,          // 8 de la mañana (hora de Argentina)
+  orden: ["Farmacia Del Río", "Farmacia General Pinto", "Farmacia Lozano"]
+};
+
+function farmaciaDeTurno(ahora = new Date()) {
+  const [a, m, d] = FARMACIAS_TURNO.inicio.split("-").map(Number);
+  // Hora de Argentina = UTC-3, así funciona igual desde cualquier celular
+  const inicio = Date.UTC(a, m - 1, d, FARMACIAS_TURNO.horaCambio + 3);
+  const SEMANA = 7 * 24 * 60 * 60 * 1000;
+  const semanas = Math.floor((ahora.getTime() - inicio) / SEMANA);
+  const n = FARMACIAS_TURNO.orden.length;
+  const nombre = FARMACIAS_TURNO.orden[((semanas % n) + n) % n];
+  const hasta = new Date(inicio + (semanas + 1) * SEMANA - 3 * 60 * 60 * 1000); // en hora argentina
+  const dia = String(hasta.getUTCDate()).padStart(2, "0") + "/" + String(hasta.getUTCMonth() + 1).padStart(2, "0");
+  return { nombre, hasta: `Hasta el miércoles ${dia} a las ${FARMACIAS_TURNO.horaCambio} h` };
+}
+
+function mostrarFarmaciaTurno() {
+  const t = farmaciaDeTurno();
+  document.getElementById("turnoNombre").textContent = t.nombre;
+  document.getElementById("turnoHasta").textContent = t.hasta;
+  // Si la farmacia está en el directorio con teléfono, sumamos el botón para escribirle
+  const clave = normalizar(t.nombre).replace(/^farmacia\s+/, "");
+  const ficha = entradasTodas.find(e => normalizar(e.nombre).includes(clave));
+  const acciones = document.getElementById("turnoAcciones");
+  acciones.innerHTML = "";
+  if (ficha && ficha.telefono) {
+    const wa = document.createElement("a");
+    wa.className = "boton-wa"; wa.href = linkWhatsapp(ficha.telefono); wa.target = "_blank"; wa.rel = "noopener";
+    wa.textContent = "💬 WhatsApp";
+    acciones.appendChild(wa);
+  }
+  const maps = document.createElement("a");
+  maps.href = linkMaps(ficha && ficha.direccion ? ficha.nombre + " " + ficha.direccion : t.nombre);
+  maps.target = "_blank"; maps.rel = "noopener"; maps.textContent = "Cómo llegar ↗";
+  acciones.appendChild(maps);
+  document.getElementById("farmaciaTurno").hidden = false;
+}
+mostrarFarmaciaTurno();
+setInterval(mostrarFarmaciaTurno, 60 * 1000); // por si la página queda abierta cuando cambia el turno
 
 /* ---------- App instalable (PWA) ---------- */
 if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
