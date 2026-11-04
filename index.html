@@ -404,7 +404,7 @@ function renderizar() {
         ${e.telefono ? `<a href="${linkWhatsapp(e.telefono)}" target="_blank" rel="noopener">💬 ${escaparHtml(e.telefono)}</a>` : ""}
         ${e.zona ? `<span>📍 ${escaparHtml(e.zona)}</span>` : ""}
         ${e.redes ? `<a class="redes-link" href="${escaparHtml(linkInstagram(e.redes))}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}
-        <a class="redes-link" href="${linkMaps(e.nombre)}" target="_blank" rel="noopener">Ver en Maps ↗</a>
+        <a class="redes-link" href="${linkMaps(e.direccion ? e.nombre + " " + e.direccion : e.nombre)}" target="_blank" rel="noopener">Ver en Maps ↗</a>
       </div>
     </div>
   `).join("");
@@ -453,6 +453,7 @@ function cargarDatosSheet(respuesta) {
     const idxTelefono = buscarColumna(headers, "telefono", "whatsapp", "celular");
     const idxDescripcion = buscarColumna(headers, "descrip");
     const idxZona = buscarColumna(headers, "zona", "barrio");
+    const idxDireccion = buscarColumna(headers, "direccion");
     const idxRedes = buscarColumna(headers, "instagram", "facebook", "redes");
     const idxPublicado = buscarColumna(headers, "public");
     // La columna que completás vos se llama exactamente "Habilitado" (no confundir con la foto del formulario)
@@ -468,7 +469,8 @@ function cargarDatosSheet(respuesta) {
         categoria: val(row, idxCategoria),
         telefono: val(row, idxTelefono),
         descripcion: val(row, idxDescripcion),
-        zona: val(row, idxZona),
+        zona: [val(row, idxDireccion), val(row, idxZona)].filter(Boolean).join(" · "),
+        direccion: val(row, idxDireccion),
         redes: val(row, idxRedes),
         publicado: val(row, idxPublicado),
         habilitado: valorHabilitado(val(row, idxHabilitado)),
