@@ -364,7 +364,7 @@ function renderizar() {
   const cat = document.getElementById("filtroCategoria").value;
 
   const filtradas = entradasTodas.filter(e => {
-    const matchQ = !q || coincide(e.nombre + " " + e.productos + " " + e.categorias.join(" ") + " " + e.rubros.map(r => r.nombre).join(" ") + " " + e.descripcion + " " + e.zona, q);
+    const matchQ = !q || coincide(e.nombre + " " + e.productos + " " + e.dedica + " " + e.categorias.join(" ") + " " + e.rubros.map(r => r.nombre).join(" ") + " " + e.descripcion + " " + e.zona, q);
     const matchRubro = !rubroElegido || e.rubros.some(r => r.nombre === rubroElegido);
     const matchCat = !cat || e.categorias.includes(cat);
     const matchHab = !document.getElementById("filtroHabilitado").checked || e.habilitado === true;
@@ -399,11 +399,13 @@ function renderizar() {
       ${e.habilitado === true ? `<span class="habilitacion si" title="Tiene local comercial habilitado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Comercio habilitado</span>` : ""}
       ${e.habilitado === false ? `<span class="habilitacion no" title="Emprendimiento sin local habilitado">🏠 Emprendimiento</span>` : ""}
       ${e.descripcion ? `<p class="descripcion">${escaparHtml(e.descripcion)}</p>` : ""}
-      ${e.productos ? `<p class="productos"><strong>Vende:</strong> ${escaparHtml(e.productos)}</p>` : ""}
+      ${e.productos ? `<p class="productos"><strong>Ofrece:</strong> ${escaparHtml(e.productos)}</p>` : ""}
+      ${e.horario ? `<p class="productos"><strong>Horario:</strong> ${escaparHtml(e.horario)}</p>` : ""}
       <div class="fila-contacto">
         ${e.telefono ? `<a href="${linkWhatsapp(e.telefono)}" target="_blank" rel="noopener">💬 ${escaparHtml(e.telefono)}</a>` : ""}
         ${e.zona ? `<span>📍 ${escaparHtml(e.zona)}</span>` : ""}
         ${e.redes ? `<a class="redes-link" href="${escaparHtml(linkInstagram(e.redes))}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}
+        ${/^(https?:\/\/|www\.)/i.test(e.web) ? `<a class="redes-link" href="${escaparHtml(/^www\./i.test(e.web) ? "https://" + e.web : e.web)}" target="_blank" rel="noopener">Web ↗</a>` : ""}
         <a class="redes-link" href="${linkMaps(e.direccion ? e.nombre + " " + e.direccion : e.nombre)}" target="_blank" rel="noopener">Ver en Maps ↗</a>
       </div>
     </div>
@@ -447,41 +449,48 @@ function cargarDatosSheet(respuesta) {
     const tabla = respuesta.table;
     const headers = tabla.cols.map(c => c.label || "");
 
+    // Cada dato se busca por palabras del título de la columna, así podés reordenar o renombrar preguntas
+    const exacta = nombre => headers.findIndex(h => normalizar(h) === nombre);
+    const todas = (...pistas) => headers.map((h, i) => pistas.some(p => normalizar(h).includes(normalizar(p))) ? i : -1).filter(i => i >= 0);
+
     let idxNombre = buscarColumna(headers, "negocio", "emprendimiento"); // primero el nombre del negocio
     if (idxNombre < 0) idxNombre = buscarColumna(headers, "nombre");
-    // Preguntas de casillas por rubro: su título empieza con "Categoría:" (ej. "Categoría: Salud")
-    const esCasillaRubro = h => /^categorias?\s*:/.test(normalizar(h));
-    const idxCasillas = headers.map((h, i) => esCasillaRubro(h) ? i : -1).filter(i => i >= 0);
-    const idxCategoria = headers.findIndex(h => !esCasillaRubro(h) &&
-      ["categoria", "oficio", "rubro"].some(p => normalizar(h).includes(p)));
-    const idxTelefono = buscarColumna(headers, "telefono", "whatsapp", "celular");
+    // Categorías: toda columna cuyo título EMPIECE con "Categoría" (ej. "Categoría", "Categoría u oficio")
+    const idxCategorias = headers.map((h, i) => normalizar(h).startsWith("categoria") ? i : -1).filter(i => i >= 0);
+    const idxDedica = headers.findIndex((h, i) => !idxCategorias.includes(i) && ["dedic", "rubro", "oficio"].some(p => normalizar(h).includes(p)));
+    const idxTelefonos = todas("whatsapp", "telefono", "celular");
     const idxDescripcion = buscarColumna(headers, "descrip");
     const idxZona = buscarColumna(headers, "zona", "barrio");
     const idxDireccion = buscarColumna(headers, "direccion");
-    const idxRedes = buscarColumna(headers, "instagram", "facebook", "redes");
-    const idxPublicado = buscarColumna(headers, "public");
-    // La columna que completás vos se llama exactamente "Habilitado" (no confundir con la foto del formulario)
-    let idxHabilitado = headers.findIndex(h => normalizar(h) === "habilitado");
+    const idxRedes = buscarColumna(headers, "instagram");
+    const idxWeb = buscarColumna(headers, "facebook", "pagina web");
+    const idxHorario = buscarColumna(headers, "horario");
+    let idxPublicado = exacta("publicado");
+    if (idxPublicado < 0) idxPublicado = buscarColumna(headers, "publicado");
+    // La columna que completás vos se llama exactamente "Habilitado" (no confundir con la pregunta del formulario)
+    let idxHabilitado = exacta("habilitado");
     if (idxHabilitado < 0) idxHabilitado = buscarColumna(headers, "habilitado");
-    const idxProductos = buscarColumna(headers, "palabras clave", "que vend", "productos", "que ofrec");
+    const idxProductos = buscarColumna(headers, "palabras clave", "productos", "que vend", "que ofrec");
 
-    const val = (row, idx) => (idx >= 0 && row.c[idx] && row.c[idx].v != null) ? row.c[idx].v : "";
+    const val = (row, idx) => (idx >= 0 && row.c[idx] && row.c[idx].v != null) ? row.c[idx].v.toString().trim() : "";
+    const primero = (row, idxs) => idxs.map(i => val(row, i)).find(Boolean) || "";
 
     entradasTodas = tabla.rows
       .map(row => ({
         nombre: val(row, idxNombre),
-        // Junta la categoría de la columna vieja (separada por ";") y las casillas (Google las separa con ",")
-        categoria: [val(row, idxCategoria).toString()]
-          .concat(idxCasillas.map(i => val(row, i).toString().split(",").join(";")))
-          .filter(Boolean).join(";"),
-        telefono: val(row, idxTelefono),
+        // Varias categorías se separan con ";" o ","
+        categoria: idxCategorias.map(i => val(row, i)).filter(Boolean).join(";").replace(/,/g, ";"),
+        dedica: val(row, idxDedica),
+        telefono: primero(row, idxTelefonos),
         descripcion: val(row, idxDescripcion),
         zona: [val(row, idxDireccion), val(row, idxZona)].filter(Boolean).join(" · "),
         direccion: val(row, idxDireccion),
         redes: val(row, idxRedes),
+        web: val(row, idxWeb),
+        horario: val(row, idxHorario),
         publicado: val(row, idxPublicado),
         habilitado: valorHabilitado(val(row, idxHabilitado)),
-        productos: val(row, idxProductos).toString(),
+        productos: val(row, idxProductos),
       }))
       .filter(e => idxPublicado < 0 ? true : esPublicado(e.publicado)) // si no hay columna "Publicado", muestra todo
       .map(e => {
