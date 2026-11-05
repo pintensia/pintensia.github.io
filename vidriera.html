@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vidriera Pintensia</title>
+<title>Pintensia Plus</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -114,14 +114,14 @@
 </div>
 
 <div class="envoltura">
-  <div class="estado" id="estado">Cargando vidriera…</div>
+  <div class="estado" id="estado">Cargando…</div>
 
   <div id="vidriera" hidden>
     <div class="portada" id="portada"></div>
 
     <div class="cabecera">
       <div class="logo-negocio" id="logo"></div>
-      <div><span class="sello">✦ Vidriera Pintensia</span></div>
+      <div><span class="sello">✦ Pintensia Plus</span></div>
     </div>
 
     <h1 id="nombre"></h1>
@@ -171,6 +171,8 @@
 /* Página de Vidriera: se arma sola con los datos de la planilla.
    Solo se muestra si la columna "Vidriera activa" dice "si". */
 const slugPedido = new URLSearchParams(location.search).get("n") || "";
+// Link lindo para compartir: pintensia.github.io/nombre-del-negocio (lo resuelve 404.html)
+const linkLindo = location.protocol.startsWith("http") && slugPedido ? location.origin + "/" + slugPedido : location.href;
 
 function el(tag, clase, texto) {
   const e = document.createElement(tag);
@@ -192,20 +194,20 @@ function cargarVidriera(respuesta) {
     const headers = respuesta.table.cols.map(c => c.label || "");
     const hn = headers.map(normalizar);
     // Busca una columna común (no de Vidriera) por palabras del título
-    const comun = (...pistas) => hn.findIndex(h => !h.startsWith("vidriera") && pistas.some(p => h.includes(normalizar(p))));
+    const comun = (...pistas) => hn.findIndex(h => !esColumnaVidriera(h) && pistas.some(p => h.includes(normalizar(p))));
     // Busca una columna de Vidriera: "Vidriera: <algo>"
-    const vid = (...pistas) => hn.findIndex(h => h.startsWith("vidriera") && h !== "vidriera activa" && pistas.some(p => h.includes(normalizar(p))));
+    const vid = (...pistas) => hn.findIndex(h => esColumnaVidriera(h) && !esColumnaActiva(h) && pistas.some(p => h.includes(normalizar(p))));
 
     let iNombre = comun("negocio", "emprendimiento"); if (iNombre < 0) iNombre = comun("nombre");
-    const iActiva = hn.indexOf("vidriera activa");
+    const iActiva = hn.findIndex(esColumnaActiva);
     const iCategorias = hn.map((h, i) => h.startsWith("categoria") ? i : -1).filter(i => i >= 0);
-    const iTelefonos = hn.map((h, i) => !h.startsWith("vidriera") && ["whatsapp", "telefono", "celular"].some(p => h.includes(p)) ? i : -1).filter(i => i >= 0);
+    const iTelefonos = hn.map((h, i) => !esColumnaVidriera(h) && ["whatsapp", "telefono", "celular"].some(p => h.includes(p)) ? i : -1).filter(i => i >= 0);
 
     const val = (row, i) => (i >= 0 && row.c[i] && row.c[i].v != null) ? row.c[i].v.toString().trim() : "";
     const fila = respuesta.table.rows.find(r => slugNegocio(val(r, iNombre)) === slugPedido);
 
-    if (!fila) return mostrarEstado("No encontramos esta vidriera.");
-    if (!esPublicado(val(fila, iActiva))) return mostrarEstado("Esta vidriera todavía no está disponible.");
+    if (!fila) return mostrarEstado("No encontramos esta página.");
+    if (!esPublicado(val(fila, iActiva))) return mostrarEstado("Esta página todavía no está disponible.");
 
     const d = {
       nombre: val(fila, iNombre),
@@ -233,12 +235,13 @@ function cargarVidriera(respuesta) {
     pintar(d);
   } catch (err) {
     console.error(err);
-    mostrarEstado("Hubo un problema cargando la vidriera.");
+    mostrarEstado("Hubo un problema cargando la página.");
   }
 }
 
 function pintar(d) {
-  document.title = d.nombre + " · Vidriera Pintensia";
+  document.title = d.nombre + " · Pintensia Plus";
+  if (linkLindo !== location.href) history.replaceState(null, "", linkLindo);
   document.getElementById("nombre").textContent = d.nombre;
 
   // Portada y logo (si no hay fotos, quedan los colores de Pintensia)
@@ -271,12 +274,12 @@ function pintar(d) {
   if (d.instagram) boton("", "📸", "Instagram", linkInstagram(d.instagram));
   if (/^(https?:\/\/|www\.)/i.test(d.web)) boton("", "🌐", "Web", /^www\./i.test(d.web) ? "https://" + d.web : d.web);
   if (d.direccion) boton("", "📍", "Cómo llegar", linkMaps(d.nombre + " " + d.direccion));
-  const compartir = boton("", "↗", "Compartir", location.href);
+  const compartir = boton("", "↗", "Compartir", linkLindo);
   compartir.removeAttribute("target");
   compartir.addEventListener("click", ev => {
     ev.preventDefault();
-    if (navigator.share) navigator.share({ title: d.nombre + " en Pintensia", url: location.href }).catch(() => {});
-    else if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(() => alert("¡Link copiado!"));
+    if (navigator.share) navigator.share({ title: d.nombre + " en Pintensia", url: linkLindo }).catch(() => {});
+    else if (navigator.clipboard) navigator.clipboard.writeText(linkLindo).then(() => alert("¡Link copiado!"));
   });
   if (acciones.children.length > 3) acciones.classList.add("cuatro");
 
@@ -334,11 +337,11 @@ function pintar(d) {
 }
 
 if (!slugPedido) {
-  mostrarEstado("Falta indicar qué vidriera querés ver.");
+  mostrarEstado("Falta indicar qué página querés ver.");
 } else {
   const s = document.createElement("script");
   s.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json;responseHandler:cargarVidriera&headers=1&sheet=${encodeURIComponent(NOMBRE_HOJA)}`;
-  s.onerror = () => mostrarEstado("No pudimos cargar la vidriera. Revisá tu conexión.");
+  s.onerror = () => mostrarEstado("No pudimos cargar la página. Revisá tu conexión.");
   document.body.appendChild(s);
 }
 </script>

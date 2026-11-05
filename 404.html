@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pintensia — Guía de negocios y servicios de General Pinto</title>
+<meta name="description" content="La guía de negocios y servicios de General Pinto.">
+<link rel="icon" type="image/png" href="/favicon.png">
+<script>
+  /* Links lindos de Pintensia Plus: pintensia.github.io/abc-tecnica
+     lleva a la página del negocio (vidriera.html?n=abc-tecnica). */
+  (function () {
+    var slug = location.pathname.replace(/^\/+|\/+$/g, "").toLowerCase();
+    if (/^[a-z0-9-]+$/.test(slug)) location.replace("/vidriera.html?n=" + encodeURIComponent(slug));
+  })();
+</script>
+<style>
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #f6f3eb; color: #18224a;
+         font-family: -apple-system, "Segoe UI", Roboto, sans-serif; text-align: center; padding: 16px; }
+  a { color: #1d49a7; font-weight: 700; }
+</style>
+</head>
+<body>
+  <div>
+    <p><img src="/logo.png" alt="Pintensia" width="180"></p>
+    <p>No encontramos esta página.</p>
+    <p><a href="/">Ir a la guía</a></p>
+  </div>
+</body>
+</html>

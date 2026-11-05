@@ -178,6 +178,12 @@
     box-shadow: 0 4px 12px var(--anillo); transition: transform .15s ease;
   }
   .cta a.boton:hover { transform: translateY(-1px); }
+  .cta .cta-planes { margin: 18px 0 10px; font-size: 0.9rem; color: var(--texto-suave); }
+  .cta a.boton-planes {
+    display: inline-block; padding: 10px 20px; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: 0.92rem;
+    background: #ffefc2; color: #7a4f00; border: 1px solid #f1d78a;
+  }
+  .cta a.boton-planes:hover { background: #ffe39a; }
 
   /* ---------- Teléfonos útiles ---------- */
   .utiles { max-width: 880px; margin: 0 auto 22px; padding: 0 16px; }
@@ -246,6 +252,9 @@
   }
 
   /* ---------- Botón de Vidriera en la ficha ---------- */
+  .card h3 a.titulo-vidriera { color: inherit; text-decoration: none; }
+  .card h3 a.titulo-vidriera::after { content: " ›"; color: #b07a00; }
+  .card h3 a.titulo-vidriera:hover { color: var(--acento); }
   .card .fila-contacto a.boton-vidriera {
     order: -1; display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px;
     background: #ffefc2; color: #7a4f00; font-weight: 800; font-size: 0.85rem; text-decoration: none;
@@ -350,6 +359,8 @@
   <div class="cta">
     <p>¿Tenés un comercio, un oficio o un emprendimiento en Pinto?</p>
     <a class="boton" id="linkFormulario" href="#" target="_blank" rel="noopener">Sumate al directorio →</a>
+    <p class="cta-planes">Es gratis. Y si querés tu propia página, conocé <strong>Pintensia Plus</strong>.</p>
+    <a class="boton-planes" href="planes.html">✦ Conocé los planes</a>
   </div>
 
   <footer class="pie">
@@ -414,6 +425,14 @@ function coincide(texto, consulta) {
   return palabras.every(p => t.includes(singular(p)));
 }
 
+/* En la ficha mostramos solo lo primero que ofrece (hasta 3 cosas) y "y más".
+   El detalle completo va en la Vidriera. Igual se puede buscar por todo. */
+function resumenOfrece(texto) {
+  const partes = texto.split(/[,;\n]+/).map(t => t.trim()).filter(Boolean);
+  if (partes.length <= 3) return partes.join(", ");
+  return partes.slice(0, 3).join(", ") + " y más";
+}
+
 function renderizar() {
   const q = normalizar(document.getElementById("buscador").value);
   const cat = document.getElementById("filtroCategoria").value;
@@ -450,19 +469,18 @@ function renderizar() {
   lista.innerHTML = filtradas.map(e => `
     <div class="card${e.vidriera ? " con-vidriera" : ""}">
       ${e.categorias.map((c, i) => `<span class="categoria ${claseCategoria(rubroDe(c).nombre)}">${rubroDe(c).emoji} ${escaparHtml(c)}</span>`).join("") || `<span class="categoria">General</span>`}
-      <h3>${escaparHtml(e.nombre) || "(sin nombre)"}</h3>
+      <h3>${e.vidriera ? `<a class="titulo-vidriera" href="vidriera.html?n=${encodeURIComponent(slugNegocio(e.nombre))}">${escaparHtml(e.nombre)}</a>` : (escaparHtml(e.nombre) || "(sin nombre)")}</h3>
       ${e.habilitado === true ? `<span class="habilitacion si" title="Tiene local comercial habilitado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Comercio habilitado</span>` : ""}
       ${e.habilitado === false ? `<span class="habilitacion no" title="Emprendimiento sin local habilitado">🏠 Emprendimiento</span>` : ""}
       ${e.descripcion ? `<p class="descripcion">${escaparHtml(e.descripcion)}</p>` : ""}
-      ${e.productos ? `<p class="productos"><strong>Ofrece:</strong> ${escaparHtml(e.productos)}</p>` : ""}
+      ${e.productos ? `<p class="productos"><strong>Ofrece:</strong> ${escaparHtml(resumenOfrece(e.productos))}</p>` : ""}
       ${e.horario ? `<p class="productos"><strong>Horario:</strong> ${escaparHtml(e.horario)}</p>` : ""}
       <div class="fila-contacto">
         ${e.telefono ? `<a class="boton-wa" href="${linkWhatsapp(e.telefono)}" target="_blank" rel="noopener">💬 ${escaparHtml(e.telefono)}</a>` : ""}
-        ${e.zona ? `<span>📍 ${escaparHtml(e.zona)}</span>` : ""}
         ${e.redes ? `<a class="redes-link" href="${escaparHtml(linkInstagram(e.redes))}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}
         ${/^(https?:\/\/|www\.)/i.test(e.web) ? `<a class="redes-link" href="${escaparHtml(/^www\./i.test(e.web) ? "https://" + e.web : e.web)}" target="_blank" rel="noopener">Web ↗</a>` : ""}
         <a class="redes-link" href="${linkMaps(e.direccion ? e.nombre + " " + e.direccion : e.nombre)}" target="_blank" rel="noopener">Ver en Maps ↗</a>
-        ${e.vidriera ? `<a class="boton-vidriera" href="vidriera.html?n=${encodeURIComponent(slugNegocio(e.nombre))}">✦ Ver vidriera</a>` : ""}
+        ${e.vidriera ? `<a class="boton-vidriera" href="vidriera.html?n=${encodeURIComponent(slugNegocio(e.nombre))}">✦ Ver su página</a>` : ""}
       </div>
     </div>
   `).join("");
@@ -528,8 +546,8 @@ function cargarDatosSheet(respuesta) {
     // La columna que completás vos se llama exactamente "Habilitado" (no confundir con la pregunta del formulario)
     let idxHabilitado = exacta("habilitado");
     if (idxHabilitado < 0) idxHabilitado = buscarColumna(headers, "habilitado");
-    // Columna que completás vos cuando llega el pago: "Vidriera activa" (si / no)
-    const idxVidriera = headersTodos.findIndex(h => normalizar(h) === "vidriera activa");
+    // Columna que completás vos cuando llega el pago: "Plus activo" (si / no)
+    const idxVidriera = headersTodos.findIndex(esColumnaActiva);
     const idxProductos = buscarColumna(headers, "palabras clave", "productos", "que vend", "que ofrec");
 
     const val = (row, idx) => (idx >= 0 && row.c[idx] && row.c[idx].v != null) ? row.c[idx].v.toString().trim() : "";
@@ -560,8 +578,8 @@ function cargarDatosSheet(respuesta) {
         const rubros = [...new Set(categorias.map(rubroDe))];
         return { ...e, categorias, rubros: rubros.length ? rubros : [RUBRO_OTROS] };
       })
-      // Orden alfabético por nombre (sin importar mayúsculas ni tildes)
-      .sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base", numeric: true }));
+      // Primero los que tienen Pintensia Plus; después todos en orden alfabético (sin importar mayúsculas ni tildes)
+      .sort((a, b) => (b.vidriera - a.vidriera) || a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base", numeric: true }));
 
     if (entradasTodas.some(e => e.habilitado === true)) document.getElementById("filtroHabilitadoCaja").hidden = false;
     poblarRubros();
