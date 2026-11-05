@@ -570,8 +570,8 @@ function cargarDatosSheet(respuesta) {
         const rubros = [...new Set(categorias.map(rubroDe))];
         return { ...e, categorias, rubros: rubros.length ? rubros : [RUBRO_OTROS] };
       })
-      // Orden alfabético por nombre (sin importar mayúsculas ni tildes)
-      .sort((a, b) => a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base", numeric: true }));
+      // Primero los que tienen Vidriera activa; después todos en orden alfabético (sin importar mayúsculas ni tildes)
+      .sort((a, b) => (b.vidriera - a.vidriera) || a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base", numeric: true }));
 
     if (entradasTodas.some(e => e.habilitado === true)) document.getElementById("filtroHabilitadoCaja").hidden = false;
     poblarRubros();
