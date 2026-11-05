@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vidriera Pintensia</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#f6f3eb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --fondo: #f6f3eb; --superficie: #ffffff; --texto: #18224a; --texto-suave: #5a6284;
+    --borde: #e7e1d2; --acento: #1d49a7; --acento-suave: #e4eaf8; --radio: 16px;
+    --sombra: 0 1px 2px rgba(20,15,5,0.04), 0 8px 24px rgba(20,15,5,0.06);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font-family: "Manrope", -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.5; }
+  a { color: inherit; }
+  .aviso { background: #fff7d6; color: #6b5300; text-align: center; font-size: 0.8rem; padding: 8px 16px; }
+  .barra { max-width: 760px; margin: 0 auto; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .barra img { height: 26px; width: auto; }
+  .barra a.volver { font-size: 0.85rem; font-weight: 600; color: var(--acento); text-decoration: none; }
+  .envoltura { max-width: 760px; margin: 0 auto; padding: 0 16px 48px; }
+
+  .portada {
+    height: 200px; border-radius: var(--radio); position: relative; overflow: hidden;
+    background:
+      radial-gradient(circle at 18% 30%, rgba(255,80,180,.75), transparent 38%),
+      radial-gradient(circle at 55% 20%, rgba(80,160,255,.8), transparent 40%),
+      radial-gradient(circle at 85% 45%, rgba(255,200,60,.7), transparent 35%),
+      linear-gradient(180deg, #1a1440, #0b0a1f);
+  }
+  .portada.con-foto { background-size: cover; background-position: center; }
+  .logo-negocio { background-size: cover; background-position: center; }
+  .logo-negocio.con-foto { color: transparent; background-color: #fff; }
+  .cabecera { display: flex; gap: 14px; align-items: flex-end; margin-top: -42px; padding: 0 12px; position: relative; }
+  .logo-negocio {
+    width: 92px; height: 92px; border-radius: 22px; flex: none; display: grid; place-items: center;
+    background: #111; color: #fff; font-family: "Outfit", sans-serif; font-weight: 700; font-size: 1.7rem;
+    border: 4px solid var(--fondo); box-shadow: var(--sombra);
+  }
+  .sello {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 0.72rem; font-weight: 800; letter-spacing: .04em;
+    text-transform: uppercase; color: #8a5a00; background: #ffefc2; border-radius: 999px; padding: 3px 10px; margin-bottom: 6px;
+  }
+  h1 { font-family: "Outfit", sans-serif; font-size: 1.9rem; line-height: 1.1; margin: 16px 0 6px; }
+  .etiquetas { display: flex; flex-wrap: wrap; gap: 6px; }
+  .etiqueta { font-size: 0.78rem; font-weight: 700; border-radius: 999px; padding: 4px 12px; background: #f0f9ff; color: #0369a1; }
+  .etiqueta.hab { background: var(--acento-suave); color: var(--acento); }
+  .etiqueta.emp { background: rgba(90,98,132,.12); color: var(--texto-suave); }
+  .bajada { font-size: 1.02rem; color: var(--texto-suave); margin: 12px 0 16px; }
+
+  .acciones { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .acciones a {
+    display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 10px 6px; border-radius: 14px;
+    text-decoration: none; font-size: 0.82rem; font-weight: 700; background: var(--superficie); border: 1px solid var(--borde); color: var(--acento);
+  }
+  .acciones a span { font-size: 1.25rem; }
+  .acciones a.wa { background: #1f8f4e; border-color: #1f8f4e; color: #fff; }
+
+  section { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 18px; margin-top: 14px; box-shadow: var(--sombra); }
+  section h2 { font-family: "Outfit", sans-serif; font-size: 1.15rem; margin: 0 0 10px; }
+  section p { margin: 0; color: var(--texto-suave); }
+  .servicios { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .servicios li { display: flex; gap: 12px; align-items: flex-start; }
+  .servicios li .ico { font-size: 1.3rem; width: 38px; height: 38px; flex: none; display: grid; place-items: center; background: var(--acento-suave); border-radius: 12px; }
+  .servicios strong { display: block; }
+  .servicios small { color: var(--texto-suave); font-size: 0.86rem; }
+
+  .fotos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .foto { aspect-ratio: 1; border-radius: 12px; position: relative; overflow: hidden; }
+  .foto { background: var(--acento-suave); }
+  .foto img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
+  .visor { position: fixed; inset: 0; background: rgba(10,10,20,.9); display: none; align-items: center; justify-content: center; z-index: 20; padding: 16px; }
+  .visor.abierto { display: flex; }
+  .visor img { max-width: 100%; max-height: 100%; border-radius: 12px; }
+  .estado { text-align: center; padding: 80px 16px; color: var(--texto-suave); }
+  .estado a { color: var(--acento); font-weight: 700; }
+  [hidden] { display: none !important; }
+  .acciones.cuatro { grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 520px) { .acciones.cuatro { grid-template-columns: repeat(4, 1fr); } }
+  .servicios li .ico { font-size: 1rem; color: var(--acento); font-weight: 800; }
+  .f1 { background: radial-gradient(circle at 30% 30%, #ff4fa3, transparent 55%), #1c1240; }
+  .f2 { background: radial-gradient(circle at 70% 25%, #4fb3ff, transparent 55%), #0e1530; }
+  .f3 { background: radial-gradient(circle at 50% 70%, #ffc845, transparent 50%), #231a10; }
+  .f4 { background: linear-gradient(160deg, #6a3df0, #e23fa0); }
+  .f5 { background: radial-gradient(circle at 40% 40%, #33e0c0, transparent 55%), #0b2324; }
+  .f6 { background: radial-gradient(circle at 60% 30%, #fff, transparent 30%), #2a2a3a; }
+
+  .datos { display: grid; gap: 10px; }
+  .dato { display: flex; gap: 10px; }
+  .dato b { display: block; font-size: 0.8rem; color: var(--texto-suave); font-weight: 600; }
+
+  .pie { text-align: center; font-size: 0.8rem; color: var(--texto-suave); margin-top: 26px; }
+  .pie a { color: var(--acento); font-weight: 700; text-decoration: none; }
+
+  @media (min-width: 700px) {
+    .portada { height: 260px; }
+    .columnas { display: grid; grid-template-columns: 1.3fr 1fr; gap: 14px; align-items: start; }
+    .columnas section { margin-top: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <a href="./"><img src="logo.png" alt="Pintensia"></a>
+  <a class="volver" href="./">← Volver a la guía</a>
+</div>
+
+<div class="envoltura">
+  <div class="estado" id="estado">Cargando vidriera…</div>
+
+  <div id="vidriera" hidden>
+    <div class="portada" id="portada"></div>
+
+    <div class="cabecera">
+      <div class="logo-negocio" id="logo"></div>
+      <div><span class="sello">✦ Vidriera Pintensia</span></div>
+    </div>
+
+    <h1 id="nombre"></h1>
+    <div class="etiquetas" id="etiquetas"></div>
+    <p class="bajada" id="frase"></p>
+
+    <div class="acciones" id="acciones"></div>
+
+    <div class="columnas">
+      <div>
+        <section id="secQueHacemos" hidden>
+          <h2>Qué hacemos</h2>
+          <p id="queHacemos"></p>
+        </section>
+        <section id="secServicios" hidden>
+          <h2>Servicios</h2>
+          <ul class="servicios" id="servicios"></ul>
+        </section>
+        <section id="secFotos" hidden>
+          <h2>Fotos</h2>
+          <div class="fotos" id="fotos"></div>
+        </section>
+      </div>
+      <div>
+        <section id="secDatos" hidden>
+          <h2>Datos útiles</h2>
+          <div class="datos" id="datos"></div>
+        </section>
+        <section id="secContacto" hidden>
+          <h2>¿Querés consultar?</h2>
+          <p style="margin-bottom:12px">Escribile directo por WhatsApp y contale qué necesitás.</p>
+          <div class="acciones" style="grid-template-columns:1fr"><a class="wa" id="waFinal" target="_blank" rel="noopener"><span>💬</span>Enviar mensaje</a></div>
+        </section>
+      </div>
+    </div>
+
+    <p class="pie">Este negocio forma parte de <a href="./">Pintensia</a>, la guía de General Pinto.</p>
+  </div>
+</div>
+
+<div class="visor" id="visor"><img alt="Foto ampliada"></div>
+
+<script src="config.js"></script>
+<script src="comun.js"></script>
+<script src="categorias.js"></script>
+<script>
+/* Página de Vidriera: se arma sola con los datos de la planilla.
+   Solo se muestra si la columna "Vidriera activa" dice "si". */
+const slugPedido = new URLSearchParams(location.search).get("n") || "";
+
+function el(tag, clase, texto) {
+  const e = document.createElement(tag);
+  if (clase) e.className = clase;
+  if (texto != null) e.textContent = texto;
+  return e;
+}
+
+function mostrarEstado(mensaje) {
+  const estado = document.getElementById("estado");
+  estado.textContent = mensaje + " ";
+  const a = el("a", "", "Volver a la guía");
+  a.href = "./";
+  estado.appendChild(a);
+}
+
+function cargarVidriera(respuesta) {
+  try {
+    const headers = respuesta.table.cols.map(c => c.label || "");
+    const hn = headers.map(normalizar);
+    // Busca una columna común (no de Vidriera) por palabras del título
+    const comun = (...pistas) => hn.findIndex(h => !h.startsWith("vidriera") && pistas.some(p => h.includes(normalizar(p))));
+    // Busca una columna de Vidriera: "Vidriera: <algo>"
+    const vid = (...pistas) => hn.findIndex(h => h.startsWith("vidriera") && h !== "vidriera activa" && pistas.some(p => h.includes(normalizar(p))));
+
+    let iNombre = comun("negocio", "emprendimiento"); if (iNombre < 0) iNombre = comun("nombre");
+    const iActiva = hn.indexOf("vidriera activa");
+    const iCategorias = hn.map((h, i) => h.startsWith("categoria") ? i : -1).filter(i => i >= 0);
+    const iTelefonos = hn.map((h, i) => !h.startsWith("vidriera") && ["whatsapp", "telefono", "celular"].some(p => h.includes(p)) ? i : -1).filter(i => i >= 0);
+
+    const val = (row, i) => (i >= 0 && row.c[i] && row.c[i].v != null) ? row.c[i].v.toString().trim() : "";
+    const fila = respuesta.table.rows.find(r => slugNegocio(val(r, iNombre)) === slugPedido);
+
+    if (!fila) return mostrarEstado("No encontramos esta vidriera.");
+    if (!esPublicado(val(fila, iActiva))) return mostrarEstado("Esta vidriera todavía no está disponible.");
+
+    const d = {
+      nombre: val(fila, iNombre),
+      categorias: iCategorias.map(i => val(fila, i)).filter(Boolean).join(";").replace(/,/g, ";").split(";").map(c => c.trim()).filter(Boolean),
+      telefono: iTelefonos.map(i => val(fila, i)).find(Boolean) || "",
+      instagram: val(fila, comun("instagram")),
+      web: val(fila, comun("facebook", "pagina web")),
+      direccion: val(fila, comun("direccion")),
+      dondeCuando: val(fila, comun("donde y cuando")),
+      horario: val(fila, comun("horario")),
+      habilitado: valorHabilitado(val(fila, hn.indexOf("habilitado"))),
+      dedica: val(fila, comun("dedic")),
+      productos: val(fila, comun("productos", "que vend", "que ofrec")),
+      logoComun: val(fila, comun("logo")),
+      frase: val(fila, vid("frase", "presentacion")),
+      queHacemos: val(fila, vid("que hacemos", "que hace", "historia")),
+      servicios: val(fila, vid("servicio")),
+      zona: val(fila, vid("zona")),
+      pago: val(fila, vid("pago")),
+      reservas: val(fila, vid("reserva", "pedido")),
+      logo: val(fila, vid("logo")),
+      portada: val(fila, vid("portada")),
+      fotos: val(fila, vid("fotos")),
+    };
+    pintar(d);
+  } catch (err) {
+    console.error(err);
+    mostrarEstado("Hubo un problema cargando la vidriera.");
+  }
+}
+
+function pintar(d) {
+  document.title = d.nombre + " · Vidriera Pintensia";
+  document.getElementById("nombre").textContent = d.nombre;
+
+  // Portada y logo (si no hay fotos, quedan los colores de Pintensia)
+  const portada = imagenesDeDrive(d.portada)[0];
+  if (portada) { const p = document.getElementById("portada"); p.classList.add("con-foto"); p.style.backgroundImage = `url("${portada}")`; }
+  const logo = imagenesDeDrive(d.logo || d.logoComun)[0];
+  const logoEl = document.getElementById("logo");
+  logoEl.textContent = d.nombre.split(/\s+/).map(p => p[0]).join("").slice(0, 3).toUpperCase();
+  if (logo) { logoEl.classList.add("con-foto"); logoEl.style.backgroundImage = `url("${logo}")`; }
+
+  // Etiquetas: categorías + habilitado / emprendimiento
+  const etiquetas = document.getElementById("etiquetas");
+  d.categorias.forEach(c => {
+    const r = RUBROS.find(rb => rb.categorias.some(x => normalizar(x) === normalizar(c)));
+    etiquetas.appendChild(el("span", "etiqueta", (r ? r.emoji + " " : "") + c));
+  });
+  if (d.habilitado === true) etiquetas.appendChild(el("span", "etiqueta hab", "✓ Comercio habilitado"));
+  if (d.habilitado === false) etiquetas.appendChild(el("span", "etiqueta emp", "🏠 Emprendimiento"));
+
+  document.getElementById("frase").textContent = d.frase || d.dedica;
+
+  // Botones
+  const acciones = document.getElementById("acciones");
+  const boton = (clase, icono, texto, href) => {
+    const a = el("a", clase); a.href = href; a.target = "_blank"; a.rel = "noopener";
+    a.append(el("span", "", icono), document.createTextNode(texto));
+    acciones.appendChild(a); return a;
+  };
+  if (d.telefono) boton("wa", "💬", "WhatsApp", linkWhatsapp(d.telefono));
+  if (d.instagram) boton("", "📸", "Instagram", linkInstagram(d.instagram));
+  if (/^(https?:\/\/|www\.)/i.test(d.web)) boton("", "🌐", "Web", /^www\./i.test(d.web) ? "https://" + d.web : d.web);
+  if (d.direccion) boton("", "📍", "Cómo llegar", linkMaps(d.nombre + " " + d.direccion));
+  const compartir = boton("", "↗", "Compartir", location.href);
+  compartir.removeAttribute("target");
+  compartir.addEventListener("click", ev => {
+    ev.preventDefault();
+    if (navigator.share) navigator.share({ title: d.nombre + " en Pintensia", url: location.href }).catch(() => {});
+    else if (navigator.clipboard) navigator.clipboard.writeText(location.href).then(() => alert("¡Link copiado!"));
+  });
+  if (acciones.children.length > 3) acciones.classList.add("cuatro");
+
+  // Qué hacemos
+  if (d.queHacemos) { document.getElementById("queHacemos").textContent = d.queHacemos; document.getElementById("secQueHacemos").hidden = false; }
+
+  // Servicios: uno por línea ("Nombre: detalle"). Si no hay, usamos "qué vendés/ofrecés" separado por comas
+  const lineas = d.servicios ? d.servicios.split(/\n+/) : d.productos.split(/[,;\n]+/);
+  const lista = document.getElementById("servicios");
+  lineas.map(l => l.trim()).filter(Boolean).forEach(l => {
+    const [titulo, ...resto] = l.split(":");
+    const li = el("li");
+    li.appendChild(el("span", "ico", "✓"));
+    const cuerpo = el("div");
+    cuerpo.appendChild(el("strong", "", titulo.trim()));
+    if (resto.length) cuerpo.appendChild(el("small", "", resto.join(":").trim()));
+    li.appendChild(cuerpo);
+    lista.appendChild(li);
+  });
+  if (lista.children.length) document.getElementById("secServicios").hidden = false;
+
+  // Fotos
+  const fotos = imagenesDeDrive(d.fotos).slice(0, 9);
+  const galeria = document.getElementById("fotos");
+  const visor = document.getElementById("visor");
+  fotos.forEach(src => {
+    const caja = el("div", "foto");
+    const img = el("img"); img.src = src; img.alt = "Foto de " + d.nombre; img.loading = "lazy";
+    img.addEventListener("click", () => { visor.querySelector("img").src = src; visor.classList.add("abierto"); });
+    caja.appendChild(img); galeria.appendChild(caja);
+  });
+  visor.addEventListener("click", () => visor.classList.remove("abierto"));
+  if (fotos.length) document.getElementById("secFotos").hidden = false;
+
+  // Datos útiles
+  const datos = document.getElementById("datos");
+  const dato = (icono, titulo, texto) => {
+    if (!texto) return;
+    const fila = el("div", "dato");
+    fila.appendChild(document.createTextNode(icono));
+    const cuerpo = el("div"); cuerpo.appendChild(el("b", "", titulo)); cuerpo.appendChild(document.createTextNode(texto));
+    fila.appendChild(cuerpo); datos.appendChild(fila);
+  };
+  dato("📍", "Dirección", d.direccion);
+  dato("🗺️", "Zona", d.zona);
+  dato("🕒", "Horarios", d.horario || d.dondeCuando);
+  dato("💳", "Formas de pago", d.pago);
+  dato("📅", "Reservas y pedidos", d.reservas);
+  if (datos.children.length) document.getElementById("secDatos").hidden = false;
+
+  if (d.telefono) { document.getElementById("waFinal").href = linkWhatsapp(d.telefono); document.getElementById("secContacto").hidden = false; }
+
+  document.getElementById("estado").hidden = true;
+  document.getElementById("vidriera").hidden = false;
+}
+
+if (!slugPedido) {
+  mostrarEstado("Falta indicar qué vidriera querés ver.");
+} else {
+  const s = document.createElement("script");
+  s.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json;responseHandler:cargarVidriera&headers=1&sheet=${encodeURIComponent(NOMBRE_HOJA)}`;
+  s.onerror = () => mostrarEstado("No pudimos cargar la vidriera. Revisá tu conexión.");
+  document.body.appendChild(s);
+}
+</script>
+</body>
+</html>

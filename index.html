@@ -245,6 +245,14 @@
     .card .fila-contacto span { width: 100%; order: -1; }
   }
 
+  /* ---------- Botón de Vidriera en la ficha ---------- */
+  .card .fila-contacto a.boton-vidriera {
+    order: -1; display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px;
+    background: #ffefc2; color: #7a4f00; font-weight: 800; font-size: 0.85rem; text-decoration: none;
+  }
+  .card .fila-contacto a.boton-vidriera:hover { background: #ffe39a; color: #7a4f00; }
+  .card.con-vidriera { border-color: #f1d78a; }
+
   /* ---------- Farmacia de turno ---------- */
   .turno {
     display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
@@ -349,32 +357,12 @@
   </footer>
 </div>
 
+<script src="config.js"></script>
+<script src="comun.js"></script>
 <script src="categorias.js"></script>
 <script>
-/* ============================================================
-   CONFIGURACIÓN — completar con tus datos reales
-   ============================================================ */
-const SHEET_ID = "1pF9yJ6MzCQ0GgLnQJEtjJkfXiK0mo8LpTvOJHcsKqEg";
-const NOMBRE_HOJA = "Respuestas de formulario 1";
-const LINK_FORMULARIO = "https://docs.google.com/forms/d/e/1FAIpQLSf1UJz_0Hc8H8DtCSeMFbiBe6IbvlHZmShrOgNUDD88pZPUlg/viewform?usp=sharing&ouid=115477518802213022429";
-
-/* ============================================================
-   A partir de acá no hace falta tocar nada
-   ============================================================ */
+/* La configuración (planilla y formulario) está en config.js */
 document.getElementById("linkFormulario").href = LINK_FORMULARIO;
-
-function normalizar(texto) {
-  return (texto || "")
-    .toString()
-    .toLowerCase()
-    .replace(/[áàäâ]/g, "a")
-    .replace(/[éèëê]/g, "e")
-    .replace(/[íìïî]/g, "i")
-    .replace(/[óòöô]/g, "o")
-    .replace(/[úùüû]/g, "u")
-    .replace(/ñ/g, "n")
-    .trim();
-}
 
 function buscarColumna(headers, ...pistas) {
   const idx = headers.findIndex(h => {
@@ -385,19 +373,6 @@ function buscarColumna(headers, ...pistas) {
 }
 
 /* Columna "Habilitado": "si" = comercio habilitado, "no" = emprendimiento, vacío = no se muestra nada */
-function valorHabilitado(valor) {
-  const v = normalizar(valor);
-  if (!v) return null;
-  if (v === "si" || v === "true" || v === "x" || v.startsWith("habilitad")) return true;
-  if (v === "no" || v === "false" || v.startsWith("no ") || v.startsWith("emprend")) return false;
-  return null;
-}
-
-function esPublicado(valor) {
-  const v = normalizar(valor);
-  return v === "si" || v === "sí" || v === "true" || v === "x" || v === "publicado";
-}
-
 function claseCategoria(cat) {
   const texto = normalizar(cat) || "general";
   let hash = 0;
@@ -439,25 +414,6 @@ function coincide(texto, consulta) {
   return palabras.every(p => t.includes(singular(p)));
 }
 
-function linkInstagram(valor) {
-  const v = (valor || "").toString().trim();
-  if (!v) return "";
-  if (/^https?:\/\//i.test(v)) return v;
-  if (/^(www\.)?instagram\.com\//i.test(v)) return "https://" + v;
-  return "https://www.instagram.com/" + v.replace(/^@/, "").replace(/\/+$/, "") + "/";
-}
-
-function linkWhatsapp(telefono) {
-  let n = (telefono || "").toString().replace(/[^0-9]/g, "");
-  if (!n) return "";
-  if (!n.startsWith("54")) n = "549" + n.replace(/^0/, "");
-  return "https://wa.me/" + n;
-}
-
-function linkMaps(nombre) {
-  return "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(nombre + " General Pinto Buenos Aires");
-}
-
 function renderizar() {
   const q = normalizar(document.getElementById("buscador").value);
   const cat = document.getElementById("filtroCategoria").value;
@@ -492,7 +448,7 @@ function renderizar() {
   estado.style.display = "none";
   resumen.textContent = `${filtradas.length} de ${entradasTodas.length} servicio${entradasTodas.length === 1 ? "" : "s"}`;
   lista.innerHTML = filtradas.map(e => `
-    <div class="card">
+    <div class="card${e.vidriera ? " con-vidriera" : ""}">
       ${e.categorias.map((c, i) => `<span class="categoria ${claseCategoria(rubroDe(c).nombre)}">${rubroDe(c).emoji} ${escaparHtml(c)}</span>`).join("") || `<span class="categoria">General</span>`}
       <h3>${escaparHtml(e.nombre) || "(sin nombre)"}</h3>
       ${e.habilitado === true ? `<span class="habilitacion si" title="Tiene local comercial habilitado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Comercio habilitado</span>` : ""}
@@ -506,6 +462,7 @@ function renderizar() {
         ${e.redes ? `<a class="redes-link" href="${escaparHtml(linkInstagram(e.redes))}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}
         ${/^(https?:\/\/|www\.)/i.test(e.web) ? `<a class="redes-link" href="${escaparHtml(/^www\./i.test(e.web) ? "https://" + e.web : e.web)}" target="_blank" rel="noopener">Web ↗</a>` : ""}
         <a class="redes-link" href="${linkMaps(e.direccion ? e.nombre + " " + e.direccion : e.nombre)}" target="_blank" rel="noopener">Ver en Maps ↗</a>
+        ${e.vidriera ? `<a class="boton-vidriera" href="vidriera.html?n=${encodeURIComponent(slugNegocio(e.nombre))}">✦ Ver vidriera</a>` : ""}
       </div>
     </div>
   `).join("");
@@ -546,7 +503,9 @@ function poblarCategorias() {
 function cargarDatosSheet(respuesta) {
   try {
     const tabla = respuesta.table;
-    const headers = tabla.cols.map(c => c.label || "");
+    const headersTodos = tabla.cols.map(c => c.label || "");
+    // Las columnas de la Vidriera se leen aparte (en vidriera.html); acá se ignoran
+    const headers = headersTodos.map(h => esColumnaVidriera(h) ? "" : h);
 
     // Cada dato se busca por palabras del título de la columna, así podés reordenar o renombrar preguntas
     const exacta = nombre => headers.findIndex(h => normalizar(h) === nombre);
@@ -569,6 +528,8 @@ function cargarDatosSheet(respuesta) {
     // La columna que completás vos se llama exactamente "Habilitado" (no confundir con la pregunta del formulario)
     let idxHabilitado = exacta("habilitado");
     if (idxHabilitado < 0) idxHabilitado = buscarColumna(headers, "habilitado");
+    // Columna que completás vos cuando llega el pago: "Vidriera activa" (si / no)
+    const idxVidriera = headersTodos.findIndex(h => normalizar(h) === "vidriera activa");
     const idxProductos = buscarColumna(headers, "palabras clave", "productos", "que vend", "que ofrec");
 
     const val = (row, idx) => (idx >= 0 && row.c[idx] && row.c[idx].v != null) ? row.c[idx].v.toString().trim() : "";
@@ -590,6 +551,7 @@ function cargarDatosSheet(respuesta) {
         publicado: val(row, idxPublicado),
         habilitado: valorHabilitado(val(row, idxHabilitado)),
         productos: val(row, idxProductos),
+        vidriera: esPublicado(val(row, idxVidriera)),
       }))
       .filter(e => idxPublicado < 0 ? true : esPublicado(e.publicado)) // si no hay columna "Publicado", muestra todo
       .map(e => {

@@ -1,0 +1,7 @@
+/* ============================================================
+   CONFIGURACIÓN DE PINTENSIA
+   Lo usan la guía (index.html) y las vidrieras (vidriera.html).
+   ============================================================ */
+const SHEET_ID = "1pF9yJ6MzCQ0GgLnQJEtjJkfXiK0mo8LpTvOJHcsKqEg";
+const NOMBRE_HOJA = "Respuestas de formulario 1";
+const LINK_FORMULARIO = "https://docs.google.com/forms/d/e/1FAIpQLSf1UJz_0Hc8H8DtCSeMFbiBe6IbvlHZmShrOgNUDD88pZPUlg/viewform?usp=sharing&ouid=115477518802213022429";
