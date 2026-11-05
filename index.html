@@ -178,6 +178,12 @@
     box-shadow: 0 4px 12px var(--anillo); transition: transform .15s ease;
   }
   .cta a.boton:hover { transform: translateY(-1px); }
+  .cta .cta-planes { margin: 18px 0 10px; font-size: 0.9rem; color: var(--texto-suave); }
+  .cta a.boton-planes {
+    display: inline-block; padding: 10px 20px; border-radius: 999px; text-decoration: none; font-weight: 800; font-size: 0.92rem;
+    background: #ffefc2; color: #7a4f00; border: 1px solid #f1d78a;
+  }
+  .cta a.boton-planes:hover { background: #ffe39a; }
 
   /* ---------- Teléfonos útiles ---------- */
   .utiles { max-width: 880px; margin: 0 auto 22px; padding: 0 16px; }
@@ -353,6 +359,8 @@
   <div class="cta">
     <p>¿Tenés un comercio, un oficio o un emprendimiento en Pinto?</p>
     <a class="boton" id="linkFormulario" href="#" target="_blank" rel="noopener">Sumate al directorio →</a>
+    <p class="cta-planes">Es gratis. Y si querés tu propia página, conocé <strong>Pintensia Plus</strong>.</p>
+    <a class="boton-planes" href="planes.html">✦ Conocé los planes</a>
   </div>
 
   <footer class="pie">
@@ -472,7 +480,7 @@ function renderizar() {
         ${e.redes ? `<a class="redes-link" href="${escaparHtml(linkInstagram(e.redes))}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}
         ${/^(https?:\/\/|www\.)/i.test(e.web) ? `<a class="redes-link" href="${escaparHtml(/^www\./i.test(e.web) ? "https://" + e.web : e.web)}" target="_blank" rel="noopener">Web ↗</a>` : ""}
         <a class="redes-link" href="${linkMaps(e.direccion ? e.nombre + " " + e.direccion : e.nombre)}" target="_blank" rel="noopener">Ver en Maps ↗</a>
-        ${e.vidriera ? `<a class="boton-vidriera" href="vidriera.html?n=${encodeURIComponent(slugNegocio(e.nombre))}">✦ Ver vidriera</a>` : ""}
+        ${e.vidriera ? `<a class="boton-vidriera" href="vidriera.html?n=${encodeURIComponent(slugNegocio(e.nombre))}">✦ Ver su página</a>` : ""}
       </div>
     </div>
   `).join("");
@@ -538,8 +546,8 @@ function cargarDatosSheet(respuesta) {
     // La columna que completás vos se llama exactamente "Habilitado" (no confundir con la pregunta del formulario)
     let idxHabilitado = exacta("habilitado");
     if (idxHabilitado < 0) idxHabilitado = buscarColumna(headers, "habilitado");
-    // Columna que completás vos cuando llega el pago: "Vidriera activa" (si / no)
-    const idxVidriera = headersTodos.findIndex(h => normalizar(h) === "vidriera activa");
+    // Columna que completás vos cuando llega el pago: "Plus activo" (si / no)
+    const idxVidriera = headersTodos.findIndex(esColumnaActiva);
     const idxProductos = buscarColumna(headers, "palabras clave", "productos", "que vend", "que ofrec");
 
     const val = (row, idx) => (idx >= 0 && row.c[idx] && row.c[idx].v != null) ? row.c[idx].v.toString().trim() : "";
@@ -570,7 +578,7 @@ function cargarDatosSheet(respuesta) {
         const rubros = [...new Set(categorias.map(rubroDe))];
         return { ...e, categorias, rubros: rubros.length ? rubros : [RUBRO_OTROS] };
       })
-      // Primero los que tienen Vidriera activa; después todos en orden alfabético (sin importar mayúsculas ni tildes)
+      // Primero los que tienen Pintensia Plus; después todos en orden alfabético (sin importar mayúsculas ni tildes)
       .sort((a, b) => (b.vidriera - a.vidriera) || a.nombre.localeCompare(b.nombre, "es", { sensitivity: "base", numeric: true }));
 
     if (entradasTodas.some(e => e.habilitado === true)) document.getElementById("filtroHabilitadoCaja").hidden = false;

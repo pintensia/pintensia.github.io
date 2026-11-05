@@ -51,10 +51,16 @@ function slugNegocio(nombre) {
   return normalizar(nombre).replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
-/* Las columnas de la Vidriera empiezan con "Vidriera" (ej. "Vidriera: fotos").
+/* Las columnas de Pintensia Plus empiezan con "Plus" o "Vidriera" (ej. "Plus: fotos").
    La guía las ignora para no confundirlas con las columnas comunes. */
 function esColumnaVidriera(titulo) {
-  return normalizar(titulo).startsWith("vidriera");
+  const t = normalizar(titulo);
+  return t.startsWith("vidriera") || t.startsWith("plus");
+}
+
+/* La columna que completás vos cuando llega el pago: "Plus activo" (o "Vidriera activa") */
+function esColumnaActiva(titulo) {
+  return ["plus activo", "pintensia plus activo", "vidriera activa"].includes(normalizar(titulo));
 }
 
 /* Convierte un link de Google Drive (como los que guarda el formulario al subir fotos)

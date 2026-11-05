@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Planes · Pintensia</title>
+<meta name="description" content="Sumá tu negocio a Pintensia gratis, o tené tu propia página con Pintensia Plus.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#f6f3eb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --fondo: #f6f3eb; --superficie: #ffffff; --texto: #18224a; --texto-suave: #5a6284;
+    --borde: #e7e1d2; --acento: #1d49a7; --acento-suave: #e4eaf8; --radio: 18px;
+    --dorado: #b07a00; --dorado-suave: #ffefc2;
+    --sombra: 0 1px 2px rgba(20,15,5,0.04), 0 8px 24px rgba(20,15,5,0.06);
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font-family: "Manrope", -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.55; }
+  h1, h2, h3 { font-family: "Outfit", "Manrope", sans-serif; line-height: 1.15; }
+  .barra { max-width: 1000px; margin: 0 auto; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
+  .barra img { height: 26px; width: auto; display: block; }
+  .barra a.volver { font-size: 0.85rem; font-weight: 600; color: var(--acento); text-decoration: none; }
+  .envoltura { max-width: 1000px; margin: 0 auto; padding: 0 16px 56px; }
+
+  /* Portada: la página propia */
+  .portada { display: grid; gap: 28px; align-items: center; padding: 18px 0 8px; }
+  .etiqueta-plus { display: inline-block; font-size: 0.75rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase;
+                   color: #7a4f00; background: var(--dorado-suave); padding: 4px 12px; border-radius: 999px; }
+  .portada h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 12px 0 12px; }
+  .portada h1 em { font-style: normal; color: var(--acento); }
+  .portada p.bajada { font-size: 1.08rem; color: var(--texto-suave); margin: 0 0 18px; }
+  .link-ejemplo {
+    display: flex; align-items: center; gap: 10px; background: var(--superficie); border: 1px solid var(--borde);
+    border-radius: 14px; padding: 12px 14px; font-weight: 700; box-shadow: var(--sombra); max-width: 440px;
+    overflow-wrap: anywhere;
+  }
+  .link-ejemplo .candado { color: #1f8f4e; }
+  .link-ejemplo span.slug { color: var(--acento); }
+  .usos { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 0; padding: 0; list-style: none; }
+  .usos li { font-size: 0.85rem; font-weight: 600; background: var(--acento-suave); color: var(--acento); padding: 6px 12px; border-radius: 999px; }
+
+  .celular {
+    justify-self: center; width: min(280px, 78vw); border-radius: 36px; padding: 10px; background: #18224a;
+    box-shadow: 0 20px 50px rgba(24,34,74,.25);
+  }
+  .celular img { display: block; width: 100%; height: auto; border-radius: 28px; }
+  .celular-nota { text-align: center; font-size: 0.78rem; color: var(--texto-suave); margin-top: 8px; }
+
+  /* Planes */
+  .titulo-seccion { text-align: center; margin: 48px 0 6px; font-size: 1.7rem; }
+  .sub-seccion { text-align: center; color: var(--texto-suave); margin: 0 0 22px; }
+  .planes { display: grid; gap: 16px; }
+  .plan { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 22px; box-shadow: var(--sombra); display: flex; flex-direction: column; }
+  .plan.plus { border: 2px solid #f1d78a; position: relative; }
+  .plan.plus .recomendado { position: absolute; top: -12px; left: 22px; background: var(--dorado-suave); color: #7a4f00; font-size: 0.72rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; border: 1px solid #f1d78a; }
+  .plan h3 { margin: 4px 0 2px; font-size: 1.35rem; }
+  .precio { font-family: "Outfit", sans-serif; font-size: 2rem; font-weight: 700; margin: 6px 0 2px; }
+  .precio small { font-family: "Manrope", sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--texto-suave); }
+  .plan p.para { color: var(--texto-suave); margin: 0 0 14px; font-size: 0.95rem; }
+  .plan ul { list-style: none; margin: 0 0 18px; padding: 0; display: grid; gap: 9px; }
+  .plan li { display: flex; gap: 10px; align-items: flex-start; font-size: 0.95rem; }
+  .plan li::before { content: "✓"; color: var(--acento); font-weight: 800; flex: none; }
+  .plan.plus li::before { color: var(--dorado); }
+  .plan li.estrella { background: var(--dorado-suave); border-radius: 12px; padding: 10px 12px; font-weight: 700; }
+  .plan li.estrella::before { content: "★"; }
+  .plan li.todo { font-weight: 700; }
+  .boton {
+    margin-top: auto; display: block; text-align: center; text-decoration: none; font-weight: 800; padding: 13px 18px;
+    border-radius: 999px; border: 2px solid var(--acento); color: var(--acento); background: transparent;
+  }
+  .plan.plus .boton { background: var(--acento); color: #fff; }
+
+  /* Cómo funciona */
+  .pasos { display: grid; gap: 12px; counter-reset: paso; margin: 0; padding: 0; list-style: none; }
+  .pasos li { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 16px 16px 16px 60px; position: relative; }
+  .pasos li::before { counter-increment: paso; content: counter(paso); position: absolute; left: 16px; top: 14px; width: 30px; height: 30px; border-radius: 50%; background: var(--acento); color: #fff; display: grid; place-items: center; font-weight: 800; }
+  .pasos strong { display: block; }
+  .pasos span { color: var(--texto-suave); font-size: 0.93rem; }
+
+  /* Preguntas */
+  details { background: var(--superficie); border: 1px solid var(--borde); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; }
+  summary { font-weight: 700; cursor: pointer; }
+  details p { color: var(--texto-suave); margin: 10px 0 0; }
+
+  .pie { text-align: center; font-size: 0.82rem; color: var(--texto-suave); margin-top: 36px; }
+  .pie a { color: var(--acento); font-weight: 700; text-decoration: none; }
+
+  @media (min-width: 760px) {
+    .portada { grid-template-columns: 1.2fr 1fr; padding-top: 36px; }
+    .planes { grid-template-columns: 1fr 1fr; align-items: stretch; }
+    .pasos { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="barra">
+  <a href="./"><img src="logo.png" alt="Pintensia"></a>
+  <a class="volver" href="./">← Volver a la guía</a>
+</div>
+
+<div class="envoltura">
+
+  <section class="portada">
+    <div>
+      <span class="etiqueta-plus">✦ Pintensia Plus</span>
+      <h1>Tu negocio con <em>página propia</em></h1>
+      <p class="bajada">Un link con toda tu información, tus fotos y tus servicios, listo para compartir con tus clientes. Sin pagar una web ni saber de diseño: lo armamos nosotros.</p>
+      <div class="link-ejemplo"><span class="candado">🔒</span><span>pintensia.github.io/<span class="slug">tu-negocio</span></span></div>
+      <ul class="usos">
+        <li>📸 En la bio de Instagram</li>
+        <li>💬 Por WhatsApp</li>
+        <li>📲 En tus estados</li>
+        <li>🧾 En presupuestos</li>
+      </ul>
+    </div>
+    <div>
+      <div class="celular"><img src="ejemplo-plus.jpg" alt="Ejemplo de página Pintensia Plus en un celular" width="585" height="996"></div>
+      <p class="celular-nota">Así se ve una página Plus (ejemplo)</p>
+    </div>
+  </section>
+
+  <h2 class="titulo-seccion">Elegí cómo aparecer</h2>
+  <p class="sub-seccion">Todos los comercios, oficios y emprendimientos de Pinto pueden estar en la guía gratis.</p>
+
+  <div class="planes">
+    <div class="plan">
+      <h3>Plan gratis</h3>
+      <div class="precio">$0</div>
+      <p class="para">Para que los vecinos te encuentren.</p>
+      <ul>
+        <li>Aparecés en la guía, en el buscador y en tu rubro</li>
+        <li>Nombre, rubro y lo que ofrecés</li>
+        <li>Botones de WhatsApp, Instagram o web</li>
+        <li>Botón para llegar con Google Maps</li>
+        <li>Sello de comercio habilitado o emprendimiento</li>
+      </ul>
+      <a class="boton" id="botonGratis" href="#" target="_blank" rel="noopener">Sumarme gratis</a>
+    </div>
+
+    <div class="plan plus">
+      <span class="recomendado">Recomendado</span>
+      <h3>Pintensia Plus</h3>
+      <div class="precio">$9.000 <small>por mes</small></div>
+      <p class="para">Para lucirte y vender más.</p>
+      <ul>
+        <li class="todo">Todo lo del plan gratis, y además:</li>
+        <li class="estrella">Tu página propia con link para compartir en Instagram, WhatsApp y donde quieras</li>
+        <li>Logo, foto de portada y hasta 6 fotos</li>
+        <li>Quiénes son, servicios detallados, horarios, formas de pago y reservas</li>
+        <li>Botón para que te pidan presupuesto por WhatsApp</li>
+        <li>Aparecés primero en la guía y en tu rubro, destacado en dorado</li>
+        <li>Cambios de fotos y textos una vez por mes</li>
+      </ul>
+      <a class="boton" id="botonPlus" href="#" target="_blank" rel="noopener">Quiero Pintensia Plus</a>
+    </div>
+  </div>
+
+  <h2 class="titulo-seccion">¿Cómo funciona Plus?</h2>
+  <p class="sub-seccion">En tres pasos tenés tu página.</p>
+  <ol class="pasos">
+    <li><strong>Completá el formulario</strong><span>Elegí Pintensia Plus y subí tus fotos y la info de tu negocio.</span></li>
+    <li><strong>Hacé la transferencia</strong><span>Al final del formulario te mostramos los datos para pagar.</span></li>
+    <li><strong>¡Listo, a compartir!</strong><span>Revisamos todo, activamos tu página y te pasamos tu link.</span></li>
+  </ol>
+
+  <h2 class="titulo-seccion">Preguntas frecuentes</h2>
+  <details>
+    <summary>¿El plan gratis es gratis de verdad?</summary>
+    <p>Sí. Aparecer en la guía siempre va a ser gratis. Plus es opcional, para quien quiera destacarse y tener su propia página.</p>
+  </details>
+  <details>
+    <summary>¿Puedo darme de baja de Plus?</summary>
+    <p>Sí, cuando quieras. Tu página se desactiva y seguís apareciendo en la guía con el plan gratis.</p>
+  </details>
+  <details>
+    <summary>¿Puedo cambiar las fotos o los textos?</summary>
+    <p>Sí, una vez por mes. Mandanos lo que quieras cambiar y lo actualizamos.</p>
+  </details>
+  <details>
+    <summary>¿El precio puede cambiar?</summary>
+    <p>El precio se actualiza periódicamente. Siempre te avisamos con anticipación antes de cualquier cambio.</p>
+  </details>
+
+  <p class="pie">Pintensia, la guía de negocios y servicios de General Pinto. <a href="./">Ir a la guía</a></p>
+</div>
+
+<script src="config.js"></script>
+<script>
+  document.getElementById("botonGratis").href = LINK_FORMULARIO;
+  document.getElementById("botonPlus").href = LINK_FORMULARIO;
+</script>
+</body>
+</html>
