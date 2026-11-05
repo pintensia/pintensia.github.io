@@ -35,7 +35,7 @@
     "border:1px solid #e7e1d2;background:#fff;color:#18224a;font:700 0.82rem Manrope,-apple-system,'Segoe UI',Roboto,sans-serif;cursor:pointer;box-shadow:0 2px 8px rgba(24,34,74,.08)}" +
     ".menu-boton svg{width:18px;height:18px}" +
     ".menu-fondo{position:fixed;inset:0;background:rgba(24,34,74,.35);z-index:90;opacity:0;pointer-events:none;transition:opacity .2s}" +
-    ".menu-panel{position:fixed;top:0;right:0;bottom:0;width:min(340px,88vw);background:#fff;z-index:91;transform:translateX(100%);visibility:hidden;transition:transform .25s ease,visibility .25s;" +
+    ".menu-panel{position:fixed;top:0;right:0;bottom:0;width:min(340px,88vw);background:#f6f3eb;z-index:91;transform:translateX(100%);visibility:hidden;transition:transform .25s ease,visibility .25s;" +
     "overflow-y:auto;padding:18px 24px 28px;box-shadow:-8px 0 30px rgba(24,34,74,.15);font-family:Manrope,-apple-system,'Segoe UI',Roboto,sans-serif;color:#18224a}" +
     "body.menu-abierto .menu-fondo{opacity:1;pointer-events:auto}body.menu-abierto .menu-panel{transform:none;visibility:visible}body.menu-abierto{overflow:hidden}" +
     ".menu-cabeza{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.menu-cabeza img{height:26px;width:auto}" +
@@ -43,10 +43,8 @@
     ".menu-panel h3,.pie-sitio h3{margin:26px 0 4px;font-size:0.72rem;letter-spacing:.08em;text-transform:uppercase;color:#5a6284;font-weight:700}" +
     ".menu-panel ul,.pie-sitio ul{list-style:none;margin:0;padding:0}" +
     ".menu-cabeza a{display:block}" +
-    ".menu-panel ul a{display:block;padding:11px 0;border-bottom:1px solid #e7e1d2;text-decoration:none;color:#18224a;font-weight:600;font-size:1.05rem}" +
-    ".menu-panel ul li:last-child a{border-bottom:0}" +
-    ".menu-panel ul a:hover{color:#1d49a7}" +
-    ".menu-panel ul a.dorado{color:#8a5d00}" +
+    ".menu-panel ul a{display:block;padding:8px 0;text-decoration:none;color:#1d49a7;font-weight:700;font-size:1.05rem}" +
+    ".menu-panel ul a:hover{text-decoration:underline}" +
     ".menu-panel .menu-mail{margin-top:30px;font-size:0.82rem;color:#5a6284}.menu-panel .menu-mail a{color:#1d49a7;font-weight:700;text-decoration:none}" +
     ".pie-sitio{max-width:1000px;margin:24px auto 0;padding:22px 16px 30px;border-top:1px solid #e7e1d2;font-family:Manrope,-apple-system,'Segoe UI',Roboto,sans-serif;color:#18224a}" +
     ".pie-sitio .pie-columnas{display:grid;gap:4px 24px}" +
