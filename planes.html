@@ -87,6 +87,7 @@
   details { background: var(--superficie); border: 1px solid var(--borde); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; }
   summary { font-weight: 700; cursor: pointer; }
   details p { color: var(--texto-suave); margin: 10px 0 0; }
+  details a { color: var(--acento); font-weight: 700; overflow-wrap: anywhere; }
 
   .pie { text-align: center; font-size: 0.82rem; color: var(--texto-suave); margin-top: 36px; }
   .pie a { color: var(--acento); font-weight: 700; text-decoration: none; }
@@ -102,7 +103,6 @@
 
 <div class="barra">
   <a href="./"><img src="logo.png" alt="Pintensia"></a>
-  <a class="volver" href="./">← Volver a la guía</a>
 </div>
 
 <div class="envoltura">
@@ -176,22 +176,23 @@
     <p>Sí. Aparecer en la guía siempre va a ser gratis. Plus es opcional, para quien quiera destacarse y tener su propia página.</p>
   </details>
   <details>
-    <summary>¿Puedo darme de baja de Plus?</summary>
-    <p>Sí, cuando quieras. Tu página se desactiva y seguís apareciendo en la guía con el plan gratis.</p>
+    <summary>¿Y si ya no quiero seguir?</summary>
+    <p>No hay problema, no tenés que llenar nada. Mandanos un mail a <a href="mailto:pintensia@gmail.com?subject=Baja%20de%20Pintensia">pintensia@gmail.com</a> con el nombre de tu negocio y nosotros te damos de baja. Si tenías Plus, podés seguir apareciendo gratis en la guía. Y si preferís no estar más en Pintensia, avisanos en ese mismo mail y te sacamos.</p>
   </details>
   <details>
-    <summary>¿Puedo cambiar las fotos o los textos?</summary>
-    <p>Sí, una vez por mes. Mandanos lo que quieras cambiar y lo actualizamos.</p>
+    <summary>¿Puedo cambiar mis fotos o mis datos?</summary>
+    <p>¡Claro! Una vez por mes mandanos lo que quieras cambiar (una foto nueva, otro horario, un servicio más) a <a href="mailto:pintensia@gmail.com?subject=Cambios%20en%20mi%20p%C3%A1gina">pintensia@gmail.com</a> y nosotros lo actualizamos. No tenés que tocar nada ni saber de computación.</p>
   </details>
   <details>
     <summary>¿El precio puede cambiar?</summary>
     <p>El precio se actualiza periódicamente. Siempre te avisamos con anticipación antes de cualquier cambio.</p>
   </details>
 
-  <p class="pie">Pintensia, la guía de negocios y servicios de General Pinto. <a href="./">Ir a la guía</a></p>
 </div>
+<div id="pieSitio"></div>
 
 <script src="config.js"></script>
+<script src="menu.js"></script>
 <script>
   document.getElementById("botonGratis").href = LINK_FORMULARIO;
   document.getElementById("botonPlus").href = LINK_FORMULARIO;
