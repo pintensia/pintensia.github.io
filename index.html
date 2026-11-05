@@ -246,6 +246,9 @@
   }
 
   /* ---------- Botón de Vidriera en la ficha ---------- */
+  .card h3 a.titulo-vidriera { color: inherit; text-decoration: none; }
+  .card h3 a.titulo-vidriera::after { content: " ›"; color: #b07a00; }
+  .card h3 a.titulo-vidriera:hover { color: var(--acento); }
   .card .fila-contacto a.boton-vidriera {
     order: -1; display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px;
     background: #ffefc2; color: #7a4f00; font-weight: 800; font-size: 0.85rem; text-decoration: none;
@@ -414,6 +417,14 @@ function coincide(texto, consulta) {
   return palabras.every(p => t.includes(singular(p)));
 }
 
+/* En la ficha mostramos solo lo primero que ofrece (hasta 3 cosas) y "y más".
+   El detalle completo va en la Vidriera. Igual se puede buscar por todo. */
+function resumenOfrece(texto) {
+  const partes = texto.split(/[,;\n]+/).map(t => t.trim()).filter(Boolean);
+  if (partes.length <= 3) return partes.join(", ");
+  return partes.slice(0, 3).join(", ") + " y más";
+}
+
 function renderizar() {
   const q = normalizar(document.getElementById("buscador").value);
   const cat = document.getElementById("filtroCategoria").value;
@@ -450,15 +461,14 @@ function renderizar() {
   lista.innerHTML = filtradas.map(e => `
     <div class="card${e.vidriera ? " con-vidriera" : ""}">
       ${e.categorias.map((c, i) => `<span class="categoria ${claseCategoria(rubroDe(c).nombre)}">${rubroDe(c).emoji} ${escaparHtml(c)}</span>`).join("") || `<span class="categoria">General</span>`}
-      <h3>${escaparHtml(e.nombre) || "(sin nombre)"}</h3>
+      <h3>${e.vidriera ? `<a class="titulo-vidriera" href="vidriera.html?n=${encodeURIComponent(slugNegocio(e.nombre))}">${escaparHtml(e.nombre)}</a>` : (escaparHtml(e.nombre) || "(sin nombre)")}</h3>
       ${e.habilitado === true ? `<span class="habilitacion si" title="Tiene local comercial habilitado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Comercio habilitado</span>` : ""}
       ${e.habilitado === false ? `<span class="habilitacion no" title="Emprendimiento sin local habilitado">🏠 Emprendimiento</span>` : ""}
       ${e.descripcion ? `<p class="descripcion">${escaparHtml(e.descripcion)}</p>` : ""}
-      ${e.productos ? `<p class="productos"><strong>Ofrece:</strong> ${escaparHtml(e.productos)}</p>` : ""}
+      ${e.productos ? `<p class="productos"><strong>Ofrece:</strong> ${escaparHtml(resumenOfrece(e.productos))}</p>` : ""}
       ${e.horario ? `<p class="productos"><strong>Horario:</strong> ${escaparHtml(e.horario)}</p>` : ""}
       <div class="fila-contacto">
         ${e.telefono ? `<a class="boton-wa" href="${linkWhatsapp(e.telefono)}" target="_blank" rel="noopener">💬 ${escaparHtml(e.telefono)}</a>` : ""}
-        ${e.zona ? `<span>📍 ${escaparHtml(e.zona)}</span>` : ""}
         ${e.redes ? `<a class="redes-link" href="${escaparHtml(linkInstagram(e.redes))}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}
         ${/^(https?:\/\/|www\.)/i.test(e.web) ? `<a class="redes-link" href="${escaparHtml(/^www\./i.test(e.web) ? "https://" + e.web : e.web)}" target="_blank" rel="noopener">Web ↗</a>` : ""}
         <a class="redes-link" href="${linkMaps(e.direccion ? e.nombre + " " + e.direccion : e.nombre)}" target="_blank" rel="noopener">Ver en Maps ↗</a>
