@@ -484,12 +484,13 @@ function renderizar() {
     <div class="card${e.vidriera ? " con-vidriera" : ""}">
       ${e.categorias.map((c, i) => `<span class="categoria ${claseCategoria(rubroDe(c).nombre)}">${rubroDe(c).emoji} ${escaparHtml(c)}</span>`).join("") || `<span class="categoria">General</span>`}
       <h3>${e.vidriera ? `<a class="titulo-vidriera" href="vidriera.html?n=${encodeURIComponent(slugNegocio(e.nombre))}">${escaparHtml(e.nombre)}</a>` : (escaparHtml(e.nombre) || "(sin nombre)")}</h3>
+      ${e.habilitado === true ? `<span class="habilitacion si" title="Tiene local comercial habilitado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>Comercio habilitado</span>` : ""}
       ${e.productos ? `<p class="productos"><strong>Ofrece:</strong> ${escaparHtml(resumenOfrece(e.productos))}</p>` : ""}
       <div class="fila-contacto">
         ${e.telefono ? `<a class="boton-wa" href="${linkWhatsapp(e.telefono)}" target="_blank" rel="noopener">💬 ${escaparHtml(e.telefono)}</a>` : ""}
         ${e.redes ? `<a class="redes-link" href="${escaparHtml(linkInstagram(e.redes))}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}
         <a class="redes-link" href="${linkMaps(e.direccion ? e.nombre + " " + e.direccion : e.nombre)}" target="_blank" rel="noopener">Ver en Maps ↗</a>
-        ${e.vidriera ? `<a class="boton-vidriera" href="vidriera.html?n=${encodeURIComponent(slugNegocio(e.nombre))}">✦ Ver su página</a>` : ""}
+        ${e.vidriera ? `<a class="boton-vidriera" href="vidriera.html?n=${encodeURIComponent(slugNegocio(e.nombre))}">✦ Conocé más</a>` : ""}
       </div>
     </div>
   `).join("");
