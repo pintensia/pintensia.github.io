@@ -1,8 +1,8 @@
 /* Service worker de Pintensia: permite instalar la app y abrirla sin internet.
    Siempre intenta traer lo último de internet; si no hay conexión,
    muestra la última versión guardada (incluidos los datos de la planilla). */
-const CACHE = "pintensia-v4";
-const BASICOS = ["./", "index.html", "vidriera.html", "planes.html", "quienes-somos.html", "menu.js", "config.js", "comun.js", "categorias.js", "logo.png", "icono-192.png", "manifest.webmanifest"];
+const CACHE = "pintensia-v5";
+const BASICOS = ["./", "index.html", "vidriera.html", "planes.html", "quienes-somos.html", "menu.js", "cortina.js", "config.js", "comun.js", "categorias.js", "logo.png", "icono-192.png", "manifest.webmanifest"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(BASICOS)).then(() => self.skipWaiting()));

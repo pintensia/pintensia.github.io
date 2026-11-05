@@ -8,3 +8,10 @@ const LINK_FORMULARIO = "https://docs.google.com/forms/d/e/1FAIpQLSf1UJz_0Hc8H8D
 
 /* Mail de contacto: lo usan el menú, el pie de página y los avisos de errores. */
 const MAIL_CONTACTO = "pintensia@gmail.com";
+
+/* CORTINA "MUY PRONTO"
+   Mientras esté en true, la gente ve solo la portada de "Muy pronto".
+   Para verla vos, entrá una vez a: pintensia.github.io/?prueba=CLAVE_PRUEBA
+   Para abrirla a todo el mundo, cambiá true por false. */
+const CORTINA_ACTIVA = true;
+const CLAVE_PRUEBA = "pinto-secreto";
