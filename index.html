@@ -40,6 +40,7 @@
 
   /* Encabezado con el logo */
   .hero { padding: 56px 16px 36px; text-align: center; }
+  .pie a { color: var(--acento); font-weight: 700; }
   .hero .logo { width: min(300px, 70vw); height: auto; display: block; margin: 0 auto 18px; }
   .hero .kicker {
     font-family: "Outfit", "Manrope", sans-serif; font-size: clamp(1.15rem, 3vw, 1.4rem);
@@ -294,7 +295,7 @@
     background: var(--superficie); border: 1px solid var(--borde); font-size: 0.85rem; color: var(--texto);
   }
 
-  footer.pie {
+  p.pie {
     margin-top: 28px; font-size: 0.8rem; color: var(--texto-suave); text-align: center;
   }
 </style>
@@ -363,17 +364,22 @@
     <a class="boton-planes" href="planes.html">✦ Conocé los planes</a>
   </div>
 
-  <footer class="pie">
-    Las publicaciones se revisan antes de aparecer en el listado.
-  </footer>
+  <p class="pie">
+    Las publicaciones se revisan antes de aparecer en el listado.<br>
+    ¿Viste un dato mal o un negocio que ya cerró? <a id="linkAvisar" href="#">Avisanos acá</a>
+  </p>
 </div>
+<div id="pieSitio"></div>
 
 <script src="config.js"></script>
 <script src="comun.js"></script>
 <script src="categorias.js"></script>
+<script src="menu.js"></script>
 <script>
 /* La configuración (planilla y formulario) está en config.js */
 document.getElementById("linkFormulario").href = LINK_FORMULARIO;
+document.getElementById("linkAvisar").href = "mailto:" + MAIL_CONTACTO + "?subject=" + encodeURIComponent("Aviso de error en Pintensia") +
+  "&body=" + encodeURIComponent("¡Hola! Quiero avisar que:\n\nNegocio: \nQué pasa (cerró, cambió el teléfono, otra cosa): \n\nGracias!");
 
 function buscarColumna(headers, ...pistas) {
   const idx = headers.findIndex(h => {

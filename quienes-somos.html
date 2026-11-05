@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiénes somos · Pintensia</title>
+<meta name="description" content="Pintensia es la guía de negocios y servicios de General Pinto, hecha en el pueblo y para el pueblo.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#f6f3eb">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --fondo: #f6f3eb; --superficie: #ffffff; --texto: #18224a; --texto-suave: #5a6284;
+    --borde: #e7e1d2; --acento: #1d49a7; --acento-suave: #e4eaf8; --radio: 18px;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font-family: "Manrope", -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.6; }
+  h1, h2 { font-family: "Outfit", "Manrope", sans-serif; line-height: 1.15; }
+  .barra { max-width: 760px; margin: 0 auto; padding: 14px 16px; }
+  .barra img { height: 26px; width: auto; display: block; }
+  .envoltura { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+  h1 { font-size: clamp(2rem, 6vw, 2.6rem); margin: 22px 0 10px; }
+  h1 em { font-style: normal; color: var(--acento); }
+  .bajada { font-size: 1.1rem; color: var(--texto-suave); margin: 0 0 26px; }
+  .caja { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); padding: 20px; margin-bottom: 14px; }
+  .caja h2 { font-size: 1.2rem; margin: 0 0 8px; }
+  .caja p { margin: 0; color: var(--texto-suave); }
+  .caja p + p { margin-top: 10px; }
+  .caja a { color: var(--acento); font-weight: 700; }
+  .lista-ofrece { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--texto-suave); }
+  .lista-ofrece li { display: flex; gap: 10px; }
+</style>
+</head>
+<body>
+
+<div class="barra"><a href="./"><img src="logo.png" alt="Pintensia"></a></div>
+
+<div class="envoltura">
+  <h1>Hecho en Pinto, <em>para Pinto</em></h1>
+  <p class="bajada">Pintensia es la guía de negocios y servicios de General Pinto. Nació con una idea simple: que encontrar lo que necesitás en el pueblo sea fácil.</p>
+
+  <div class="caja">
+    <h2>¿Por qué existe Pintensia?</h2>
+    <p>En un pueblo nos conocemos todos, pero igual a veces cuesta saber quién arregla una heladera, qué farmacia está de turno o dónde comprar eso que buscás. Muchos comercios y emprendimientos no tienen página web, y la información queda repartida entre grupos de WhatsApp y el boca en boca.</p>
+    <p>Pintensia junta todo eso en un solo lugar, para que los vecinos encuentren rápido y los negocios del pueblo se hagan conocer.</p>
+  </div>
+
+  <div class="caja">
+    <h2>¿Qué vas a encontrar?</h2>
+    <ul class="lista-ofrece">
+      <li><span>🏪</span><span>Comercios, oficios y emprendimientos de Pinto, con su WhatsApp y cómo llegar.</span></li>
+      <li><span>💊</span><span>La farmacia de turno de cada semana.</span></li>
+      <li><span>📞</span><span>Los teléfonos útiles del pueblo, a un toque.</span></li>
+    </ul>
+  </div>
+
+  <div class="caja">
+    <h2>Lo hacemos entre todos</h2>
+    <p>Sumar tu negocio es gratis. Y si ves algo que está mal, un negocio que cerró o tenés una idea para mejorar, escribinos a <a href="mailto:pintensia@gmail.com?subject=Consulta%20sobre%20Pintensia">pintensia@gmail.com</a>. Leemos todos los mensajes.</p>
+  </div>
+</div>
+
+<div id="pieSitio"></div>
+
+<script src="config.js"></script>
+<script src="menu.js"></script>
+</body>
+</html>
