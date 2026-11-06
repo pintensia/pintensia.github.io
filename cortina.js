@@ -3,6 +3,7 @@
    Se prende y apaga desde config.js (CORTINA_ACTIVA).
    Quien entra con ?prueba=CLAVE_PRUEBA ve el sitio completo
    desde ese celular o compu. Con ?prueba=salir vuelve a ver la cortina.
+   Con ?prueba=CLAVE&video se oculta el cartel de "Modo prueba" hasta cerrar la pestaña.
    ============================================================ */
 (function () {
   if (typeof CORTINA_ACTIVA === "undefined" || !CORTINA_ACTIVA) return;
@@ -24,6 +25,12 @@
   var esPrueba = leer() === CLAVE_PRUEBA;
 
   if (esPrueba) {
+    // Con ?video no se muestra el cartel de "Modo prueba" (para grabar la pantalla)
+    var params = new URLSearchParams(location.search);
+    try {
+      if (params.has("video")) sessionStorage.setItem("pintensia-video", "1");
+      if (sessionStorage.getItem("pintensia-video")) return;
+    } catch (e) { if (params.has("video")) return; }
     document.addEventListener("DOMContentLoaded", function () {
       var aviso = document.createElement("a");
       aviso.href = "?prueba=salir";
